@@ -22,7 +22,7 @@ One time setup of the original repository as a remote "upstream":
 git remote add upstream https://github.com/qmk/qmk_firmware.git
 ```
 
-## Sync upstream to own fork
+## Sync upstream to own fork master
 ```
 git fetch upstream
 git checkout master
@@ -30,9 +30,16 @@ git merge upstream/master
 git push origin master
 ```
 
+## Sync master with branch
+```
+git checkout <branch>
+git merge master
+git push origin <branch>
+```
+
 ## Commit new changes
 ```
-git commit -a -m ""
+git commit -a -m "<comments>"
 git push
 ```
 
@@ -40,17 +47,17 @@ git push
 See [managing branches](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches) for details.
 Create a new branch just for keyboard or user space changes
 ```
-git checkout -b [name_of_your_new_branch]
+git checkout -b [new_branch]
 ```
 Push the branch on github
 ```
-git push origin [name_of_your_new_branch]
+git push origin [new_branch]
 ```
-Switch to specific branch:
+Switch to that branch to make changes:
 ```
-git checkout [name_of_your_new_branch]
+git checkout [new_branch]
 ```
 Push changes to branch on github
 ```
-git push --set-upstream origin [name_of_your_new_branch]
+git push origin [new_branch]
 ```
