@@ -2,8 +2,7 @@
 https://docs.qmk.fm/#/newbs_git_using_your_master_branch
 
 # Branching git commits
-See [managing branches](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches) for details.
-Create a new branch just for specific changes (skip if branch is already on repo) and push to own repo:
+See [managing branches](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches) for details. Create a new branch just for specific changes (skip if branch is already on repo) and push to own repo:
 ```
 git checkout -b [new_branch]
 git push origin [new_branch]
@@ -46,9 +45,7 @@ git push origin <branch>
 ```
 
 # Pruning branches
-After a branch PR is accepted into master, it can be deleted at the end of the PR.
-Sync the forked master with upstream, confirm that the merged and deleted branch can
-be pruned with dry run, then actually prune it:
+After a branch PR is accepted into master, it can be deleted at the end of the PR. Sync the forked master with upstream, confirm that the merged and deleted branch can be pruned with dry run, then actually prune it:
 ```
 git remote prune --dry-run origin
 git remote prune origin
@@ -59,9 +56,7 @@ git branch -d <pruned branch>
 ```
 
 # Reverting commits
-Committed mistakes can be reverted using reset. Find the commit ID to reset to that
-point. Checkout to the right branch or master, reset to that ID, run log to confirm
-position, then force push back github to reset repo to that previous ID:
+Committed mistakes can be reverted using reset. Find the commit ID to reset to that point. Checkout to the right branch or master, reset to that ID, run log to confirm position, then force push back github to reset repo to that previous ID:
 ```
 git reset --hard <commit ID>
 git log
