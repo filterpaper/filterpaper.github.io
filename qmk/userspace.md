@@ -45,8 +45,18 @@ QMK compiler must be informed of this file with the following line inside `rules
 ```c
 SRC += newbie.c
 ```
+The user space should will have all 4 files:
+```
+~$ tree qmk_firmware/users/newbie/
+qmk_firmware/users/newbie/
+|-- config.h
+|-- newbie.c
+|-- newbie.json
+`-- rules.mk
 
-Customisation inside all 3 files will be picked up by the `qmk compile ~/qmk_firmware/users/newbie/newbie.json` build command.
+0 directories, 4 files
+```
+The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will build these files as part of the process.
 
 
 # Supporting more than one keyboard
@@ -129,6 +139,21 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 #endif // KEYBOARD_bm40hsrgb
 ```
+
+
+Userspace with shared source code for multiple keyboard .json files should look like this:
+```
+~$ tree qmk_firmware/users/newbie/
+qmk_firmware/users/newbie/
+|-- bm40rgb.json
+|-- config.h
+|-- crkbd.json
+|-- newbie.c
+`-- rules.mk
+
+0 directories, 5 files
+```
+
 
 # Summary
 Maintaining the userspace in this manner will keep your code files tidy in one location instead of scattering them all over the QMK source tree. Backup and git commits will be centralized to one folder. However it is not without some drawbacks:
