@@ -2,7 +2,7 @@
 
 One of the least obvious ways of building QMK firmware is using the json file exported out of the [Configurator](https://config.qmk.fm/) with [userspace](https://docs.qmk.fm/#/feature_userspace). This method is favored personally for the following advantages:
 
-* Simplified file management with everything in folder—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
+* Simplified file management with everything in one folder—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
 * Skips `keymap.c` conversion with `qmk json2c`. 
 * Avoids onerous text editing of `keymaps[]` in `keymap.c`.
 * Easy to extend support for additional keyboards.
@@ -116,12 +116,25 @@ QMK variables can likewise be selectively configured inside conditional `#ifdef`
 ## newbie.c
 Judicious use of `#ifdef` conditions in the source is recommended for relevant sections, matching those in `rules.mk` and `config.h`. This will exclude code meant only for specific keyboards:
 ```c
+// Init effect for RGB boards only
 #ifdef RGB_MATRIX_ENABLE
 void matrix_init_user(void) {
     rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
 }
 #endif
 
+// Leader key feature for all boards
+LEADER_EXTERNS();
+void matrix_scan_user(void) {
+	LEADER_DICTIONARY() {
+		leading = false;
+		leader_end();
+		SEQ_ONE_KEY(KC_P) { SEND_STRING("()"); }
+		SEQ_ONE_KEY(KC_B) { SEND_STRING("{}"); }
+	}
+}
+
+// Default layer effects for BM40 only
 #ifdef KEYBOARD_bm40hsrgb
 layer_state_t layer_state_set_user(layer_state_t state) {
 
