@@ -9,11 +9,11 @@ One of the least obvious way of building QMK firmware is using the json file exp
 
 
 # Initial space setup
-(Prerequisite: [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) must be installed correctly before proceeding.) The [QMK userspace](https://docs.qmk.fm/#/feature_userspace) should be your github name—create that folder inside `qmk_firmware/users/`:
+(Prerequisite: [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) must be installed correctly before proceeding) The [QMK userspace](https://docs.qmk.fm/#/feature_userspace) should be your github name—create that folder inside `qmk_firmware/users/`:
 ```
 mkdir ~/qmk_firmware/users/newbie/
 ```
-Visit the [Configurator](https://config.qmk.fm/) to customise a key map layout for your keyboard. It is important to match the "*key map name*" field with userspace, "newbie" in this example. 
+Visit the [Configurator](https://config.qmk.fm/) to customise a key map layout for your keyboard. It is important for the Configurator's *KEYMAP NAME* field to match userspace, "newbie" in this example. 
 
 Export that layout and it will be saved as `newbie.json` by default. Move the file into the userspace folder if not already saved inside:
 ```
@@ -22,7 +22,7 @@ mv newbie.json ~/qmk_firmware/users/newbie/
 
 
 # Compiling a default firmware
-That space is now ready for building a firmware. Simply run `qmk compile` on that .json file. **Important**: *compile* command expects a *full path*, even if executed in the current folder:
+Simply run `qmk compile` on that .json file. (**Important**: *compile* command expects a *full path*, even if executed in the current folder):
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
@@ -30,9 +30,9 @@ If everything goes well, it will build a firmware with default settings using yo
 
 
 # Customising the firmware
-You can start customising the firmware with code files saved inside the userspace. See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming conventions of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
+You can start customising the firmware with code files saved inside the userspace folder. See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming convention of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
 
-Hardware feature and QMK variables must be configured in both of these files
+Hardware feature and QMK variables should be configured in `rules.mk` and `config.h`:
 ```
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
@@ -41,7 +41,7 @@ Instead of `keymap.c`, programming codes should be added into `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
-Unlike `keymap.c`,the key map layout array is excluded. QMK compiler must be informed of this file with the following line inside `rules.mk`:
+Unlike `keymap.c`, the `keymaps[]` array is excluded from this file because key layout is stored in the .json file. Do add the following line into `rules.mk` for build process to find it during compile time:
 ```c
 SRC += newbie.c
 ```
@@ -56,7 +56,7 @@ qmk_firmware/users/newbie/
 
 0 directories, 4 files
 ```
-The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will automatically include them in the build process.
+The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will build the custom firmware with everything inside that folder.
 
 
 # Supporting multiple keyboard
