@@ -45,7 +45,7 @@ QMK compiler must be informed of this file with the following line inside `rules
 ```c
 SRC += newbie.c
 ```
-The user space should will have all 4 files:
+Userspace will have these 4 files:
 ```
 ~$ tree qmk_firmware/users/newbie/
 qmk_firmware/users/newbie/
@@ -56,7 +56,7 @@ qmk_firmware/users/newbie/
 
 0 directories, 4 files
 ```
-The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will build these files as part of the process.
+The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will include them in the build process.
 
 
 # Supporting more than one keyboard
@@ -98,8 +98,6 @@ QMK variables can likewise be selectively configured inside `#ifdef` blocks:
 #define TAPPING_TERM 250
 #define PERMISSIVE_HOLD
 #define IGNORE_MOD_TAP_INTERRUPT
-#define LEADER_TIMEOUT 500
-#define LEADER_PER_KEY_TIMING
 #define TAP_CODE_DELAY 10
 
 #ifdef RGB_MATRIX_ENABLE
@@ -141,7 +139,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 ```
 
 
-Userspace with shared source code for multiple keyboard .json files should look like this:
+Userspace with shared source code for multiple keyboard .json files should look neat this way:
 ```
 ~$ tree qmk_firmware/users/newbie/
 qmk_firmware/users/newbie/
@@ -156,6 +154,6 @@ qmk_firmware/users/newbie/
 
 
 # Summary
-Maintaining the userspace in this manner will keep your code files tidy in one location instead of scattering them all over the QMK source tree. Backup and git commits will be centralized to one folder. However it is not without some drawbacks:
-* Dependent on QMK Configurator to modify key map layout
-* .json files are *illegible* to casual inspection
+Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree. However it is not without some drawbacks:
+* Dependency on QMK Configurator to modify key map layout
+* .json files are *illegible* for casual inspection
