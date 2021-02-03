@@ -3,13 +3,13 @@
 One of the least obvious way of building QMK firmware is using the json file exported out of the [configurator](https://config.qmk.fm/) with userspace. This method is favored personally for the following advantage:
 
 * Simplified file maintenance with everything inside userspace—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
-* Skip that `keymap.c` conversion step with `qmk json2c`. 
-* Eliminates orenous `keymap.c` maintenance with text editors.
+* Skip `keymap.c` conversion step with `qmk json2c`. 
+* Eliminates onerous `keymap.c` maintenance with text editors.
 * Easy to extend support for additional keyboards in the same space.
 
 
-# First time setup 
-(Prerequisite: [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) must be setup correctly before proceeding.) The [QMK userspace](https://docs.qmk.fm/#/feature_userspace) should be your github name—"newbie" in this example, created inside `qmk_firmware/users/`:
+# First setup 
+(Prerequisite: [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) must be installed correctly before proceeding.) The [QMK userspace](https://docs.qmk.fm/#/feature_userspace) should be your github name—"newbie" in this example, created inside `qmk_firmware/users/`:
 ```
 mkdir ~/qmk_firmware/users/newbie/
 ```
@@ -26,18 +26,18 @@ The space is now setup to compile with default setting. Simply run `qmk compile`
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
-If everything goes well, it will build with default settings from the keyboard source.
+If everything goes well, it will build a firmware with default settings from the keyboard source.
 
 
 # Customising the firmware
-You can start customising the firmware with code files saved inside the userspace. Do see QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming conventions of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
+You can start customising the firmware with code files saved inside the userspace. See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming conventions of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
 
-Hardware feature selection and QMK variables should configured in both of these files that will be a picked up automatically by the build process:
+Hardware features and QMK variables should configured in these files that will be a picked up automatically by the build process:
 ```
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead `keymap.c`, programming codes can be added into your own `<name>.c` like:
+Instead `keymap.c`, programming codes should be added into your own `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
@@ -54,7 +54,7 @@ Additional keyboards can be configured in the same userspace with the following 
 * Provide distinct names for each keyboard's .json like `<keyboard-name>.json`.
 * Liberal use of `#ifdef` to block out code sections for keyboard-specific features.
 
-## `rules.mk`
+## rules.mk
 QMK features can be enabled or disabled for specific hardware with define blocks:
 ```c
 # Common feature for all keyboars
@@ -79,7 +79,7 @@ endif
 SRC += newbie.c
 ```
 
-## `config.h`
+## config.h
 QMK variables can likewise be selectively configured inside define blocks:
 ```c
 #pragma once
@@ -103,8 +103,8 @@ QMK variables can likewise be selectively configured inside define blocks:
 #endif
 ```
 
-## `<name>.c`
-There should also be judicious use of `#ifdef` blocks in the source to include and exclude codes to match those in `rules.mk` and `config.h`. Example:
+## <name>.c
+Judicious use of `#ifdef` blocks in the source is recommended to include and exclude relevant section, matching those in `rules.mk` and `config.h`. Example:
 ```c
 #ifdef RGB_MATRIX_ENABLE
 void matrix_init_user(void) {
