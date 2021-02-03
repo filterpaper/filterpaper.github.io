@@ -26,7 +26,7 @@ The space is now setup to compile with default setting. Simply run `qmk compile`
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
-If everything goes well, it will build a firmware with default settings from the keyboard source. Key map can be modified by importing the .json file back into the Configurator tool and repeating the process.
+If everything goes well, it will build a firmware with default settings from the keyboard source. Key map can be modified by importing `newbie.json` file back into the Configurator tool and repeating the process.
 
 
 # Customising the firmware
@@ -60,8 +60,8 @@ The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will include t
 
 
 # Supporting more than one keyboard
-Additional keyboards can be configured in the same userspace with the following guideline:a
-* Provide distinct names for each keyboard's .json like `<keyboard-name>.json`.
+Additional keyboards can be configured in the same userspace with the following guideline:
+* Use distinct keyboard file name for each .json like `<keyboard-name>.json`.
 * Liberal use of `#ifdef` to block out code sections for keyboard-specific features.
 
 ## rules.mk
@@ -139,7 +139,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 ```
 
 
-Userspace with shared source code for multiple keyboard .json files should look neat this way:
+Userspace with shared source code for multiple keyboard .json files will look neat in this manner:
 ```
 ~$ tree qmk_firmware/users/newbie/
 qmk_firmware/users/newbie/
