@@ -1,10 +1,10 @@
 # Standalone Userspace
 
-One of the least obvious way of building QMK firmware is using the json file exported out of the [configurator](https://config.qmk.fm/). This method is favored personally for the following advantage:
+One of the least obvious way of building QMK firmware is using the json file exported out of the [configurator](https://config.qmk.fm/) with userspace. This method is favored personally for the following advantage:
 
-* Simplified code file maintenance with everything inside userspace—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
-* Eliminates `keymap.c` conversion using `qmk json2c` when configurator is the preferred key map editor. 
-* Removes orenous `keymap.c` maintenance with text editors.
+* Simplified file maintenance with everything inside userspace—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
+* Skip that `keymap.c` conversion step with `qmk json2c`. 
+* Eliminates orenous `keymap.c` maintenance with text editors.
 * Easy to extend support for additional keyboards in the same space.
 
 
