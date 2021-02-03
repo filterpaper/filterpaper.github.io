@@ -1,6 +1,6 @@
 # Standalone Userspace
 
-One of the least obvious way of building QMK firmware is using the json file exported out of the [configurator](https://config.qmk.fm/) with userspace. This method is favored personally for the following advantage:
+One of the least obvious way of building QMK firmware is using the json file exported out of the [Configurator](https://config.qmk.fm/) with [userspace](https://docs.qmk.fm/#/feature_userspace). This method is favored personally for the following advantage:
 
 * Simplified file maintenance with everything inside userspace—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
 * Skip `keymap.c` conversion step with `qmk json2c`. 
@@ -13,7 +13,7 @@ One of the least obvious way of building QMK firmware is using the json file exp
 ```
 mkdir ~/qmk_firmware/users/newbie/
 ```
-Visit the [configurator](https://config.qmk.fm/) to customise a key map layout for your keyboard. It is important for the "key map name" to match the userpace, "newbie" in this example. 
+Visit the [Configurator](https://config.qmk.fm/) to customise a key map layout for your keyboard. It is important for "*key map name*" field of the configurator tool to match userspace, "newbie" in this example. 
 
 Export the key layout and it will be saved as `newbie.json` by default. Move the file into the userspace folder if it was not saved in there:
 ```
@@ -22,11 +22,11 @@ mv newbie.json ~/qmk_firmware/users/newbie/
 
 
 # Compiling first default firmware
-The space is now setup to compile with default setting. Simply run `qmk compile` on that .json file. Important: the command expects a full path, even if executed in the current folder:
+The space is now setup to compile with default setting. Simply run `qmk compile` on that .json file. **Important**: the command expects a *full path*, even if executed in the current folder:
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
-If everything goes well, it will build a firmware with default settings from the keyboard source.
+If everything goes well, it will build a firmware with default settings from the keyboard source. Key map can be modified by importing the .json file back into the Configurator tool and repeating the process.
 
 
 # Customising the firmware
@@ -46,7 +46,7 @@ QMK compiler must be informed of this file with the following line inside `rules
 SRC += newbie.c
 ```
 
-Customisation in all 3 files will be picked up by the `qmk compile ~/qmk_firmware/users/newbie/newbie.json` build command.
+Customisation inside all 3 files will be picked up by the `qmk compile ~/qmk_firmware/users/newbie/newbie.json` build command.
 
 
 # Supporting more than one keyboard
@@ -55,7 +55,7 @@ Additional keyboards can be configured in the same userspace with the following 
 * Liberal use of `#ifdef` to block out code sections for keyboard-specific features.
 
 ## rules.mk
-QMK features can be enabled or disabled for specific hardware with define blocks:
+QMK features can be enabled or disabled for specific hardware with `ifeq` blocks:
 ```c
 # Common feature for all keyboars
 BOOTMAGIC_ENABLE = yes
@@ -80,7 +80,7 @@ SRC += newbie.c
 ```
 
 ## config.h
-QMK variables can likewise be selectively configured inside define blocks:
+QMK variables can likewise be selectively configured inside `#ifdef` blocks:
 ```c
 #pragma once
 
@@ -103,8 +103,8 @@ QMK variables can likewise be selectively configured inside define blocks:
 #endif
 ```
 
-## <name>.c
-Judicious use of `#ifdef` blocks in the source is recommended to include and exclude relevant section, matching those in `rules.mk` and `config.h`. Example:
+## newbie.c
+Judicious use of `#ifdef` blocks in the source is recommended to include and exclude relevant sections, matching those in `rules.mk` and `config.h`. Example:
 ```c
 #ifdef RGB_MATRIX_ENABLE
 void matrix_init_user(void) {
@@ -132,5 +132,5 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 # Summary
 Maintaining the userspace in this manner will keep your code files tidy in one location instead of scattering them all over the QMK source tree. Backup and git commits will be centralized to one folder. However it is not without some drawbacks:
-* Reliance on QMK Configurator to modify key map layout
-* .json files are illegible to inspect
+* Dependent on QMK Configurator to modify key map layout
+* .json files are *illegible* to casual inspection
