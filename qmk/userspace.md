@@ -138,8 +138,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #endif // KEYBOARD_bm40hsrgb
 ```
 
-
-Userspace with shared source code for multiple keyboard .json files will look neat in this manner:
+## Collectively
+When you're done, the shared userspace for multiple keyboards will be neat this way:
 ```
 ~$ tree qmk_firmware/users/newbie/
 qmk_firmware/users/newbie/
@@ -150,6 +150,11 @@ qmk_firmware/users/newbie/
 `-- rules.mk
 
 0 directories, 5 files
+```
+Rebuilding each keyboard's firmware is as simple as:
+```
+qmk compile ~/qmk_firmware/users/newbie/bm40rgb.json
+qmk compile ~/qmk_firmware/users/newbie/crkbd.json
 ```
 
 
