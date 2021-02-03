@@ -37,11 +37,11 @@ Hardware features and QMK variables should configured in these files that will b
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead `keymap.c`, programming codes should be added into your own `<name>.c` like:
+Instead of `keymap.c`, programming codes should be added into your own `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
-QMK compiler must be informed of this file with the following line inside `rules.mk`:
+Unlike `keymap.c`,the key map layout array can be excluded completely. QMK compiler must be informed of this file with the following line inside `rules.mk`:
 ```c
 SRC += newbie.c
 ```
@@ -67,7 +67,7 @@ Additional keyboards can be configured in the same userspace with the following 
 ## rules.mk
 QMK features can be enabled or disabled for specific hardware with `ifeq` blocks:
 ```c
-# Common feature for all keyboars
+# Common feature for all keyboards
 BOOTMAGIC_ENABLE = yes
 EXTRAKEY_ENABLE = yes
 RGBLIGHT_ENABLE = no
@@ -79,7 +79,7 @@ ifeq ($(strip $(KEYBOARD)), bm40hsrgb)
     RGB_MATRIX_CUSTOM_USER = yes
 endif
 
-# Split keyboard feature for Corne
+# Split features for Corne
 ifeq ($(strip $(KEYBOARD)), crkbd/rev1/common)
     WPM_ENABLE = yes
     MOUSEKEY_ENABLE = yes
@@ -116,7 +116,6 @@ Judicious use of `#ifdef` blocks in the source is recommended to include and exc
 ```c
 #ifdef RGB_MATRIX_ENABLE
 void matrix_init_user(void) {
-    rgb_matrix_sethsv_noeeprom(HSV_OFF);
     rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
 }
 #endif
