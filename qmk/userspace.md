@@ -126,12 +126,12 @@ void matrix_init_user(void) {
 // Leader key feature for all boards
 LEADER_EXTERNS();
 void matrix_scan_user(void) {
-	LEADER_DICTIONARY() {
-		leading = false;
-		leader_end();
-		SEQ_ONE_KEY(KC_P) { SEND_STRING("()"); }
-		SEQ_ONE_KEY(KC_B) { SEND_STRING("{}"); }
-	}
+    LEADER_DICTIONARY() {
+        leading = false;
+        leader_end();
+        SEQ_ONE_KEY(KC_P) { SEND_STRING("()"); }
+        SEQ_ONE_KEY(KC_B) { SEND_STRING("{}"); }
+    }
 }
 
 // Default layer effects for BM40 only
