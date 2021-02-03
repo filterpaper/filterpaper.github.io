@@ -3,8 +3,8 @@
 One of the least obvious way of building QMK firmware is using the json file exported out of the [Configurator](https://config.qmk.fm/) with [userspace](https://docs.qmk.fm/#/feature_userspace). This method is favored personally for the following advantage:
 
 * Simplified file maintenance with everything inside on folder—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
-* Skips `keymap.c` conversion step with `qmk json2c`. 
-* Avoids onerous editing of layouts inside `keymap.c` with text editors.
+* Skips `keymap.c` conversion with `qmk json2c`. 
+* Avoids onerous text editing of `keymaps[]` in `keymap.c`.
 * Easy to extend support for additional keyboards in the same space.
 
 
@@ -30,14 +30,14 @@ If everything goes well, it will build a firmware with default settings using yo
 
 
 # Customising the firmware
-You can start customising the firmware with code files saved inside the userspace folder. See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming convention of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
+See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming convention of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
 
 Hardware feature and QMK variables should be configured in `rules.mk` and `config.h`:
 ```
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead of `keymap.c`, programming codes should be added into `<name>.c` like:
+Instead of `keymap.c`, programming codes should be placed in `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
