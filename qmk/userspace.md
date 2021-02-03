@@ -37,11 +37,11 @@ Hardware feature and QMK variables should be configured in `rules.mk` and `confi
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead of `keymap.c`, programming codes should be placed in `<name>.c` like:
+Instead of `keymap.c`, programming codes should be saved in `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
-Unlike `keymap.c`, the `keymaps[]` array is excluded from this file because key layout is stored in the .json file. Do add the following line into `rules.mk` for build process to find it during compile time:
+Unlike `keymap.c`, the `keymaps[]` array is excluded from this file because key layout is stored in the .json file. Do add the following line into `rules.mk` for QMK build process to find it during compile time:
 ```c
 SRC += newbie.c
 ```
@@ -56,7 +56,7 @@ qmk_firmware/users/newbie/
 
 0 directories, 4 files
 ```
-The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command will include custom codes in that folder.
+The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatically include everything in that folder.
 
 
 # Supporting multiple keyboard
