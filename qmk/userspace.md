@@ -65,15 +65,15 @@ RGB_MATRIX_ENABLE = no
 
 # RGB matrix lights for BM40
 ifeq ($(strip $(KEYBOARD)), bm40hsrgb)
-	RGB_MATRIX_ENABLE = yes
-	RGB_MATRIX_CUSTOM_USER = yes
+    RGB_MATRIX_ENABLE = yes
+    RGB_MATRIX_CUSTOM_USER = yes
 endif
 
 # Split keyboard feature for Corne
 ifeq ($(strip $(KEYBOARD)), crkbd/rev1/common)
-	WPM_ENABLE = yes
-	MOUSEKEY_ENABLE = yes
-	OLED_DRIVER_ENABLE = yes
+    WPM_ENABLE = yes
+    MOUSEKEY_ENABLE = yes
+    OLED_DRIVER_ENABLE = yes
 endif
 
 SRC += newbie.c
