@@ -56,7 +56,7 @@ qmk_firmware/users/newbie/
 
 0 directories, 4 files
 ```
-The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatically include everything in that folder.
+The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatically include everything in that folder. Except for `newbie.json`, all files are optional. The .c source file is not required for example if you just simply need some QMK variables changed inside `config.h`.
 
 
 # Supporting multiple keyboard
