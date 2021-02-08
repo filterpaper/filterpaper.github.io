@@ -22,7 +22,7 @@ mv newbie.json ~/qmk_firmware/users/newbie/
 
 
 # Compiling a default firmware
-Simply run `qmk compile` on that .json file (**Important**: `compile` expects a *full path*, even if executed in the current folder):
+Building a firmware is as simple as running `qmk compile` on that .json file:
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
