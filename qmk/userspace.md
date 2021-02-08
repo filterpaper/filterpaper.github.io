@@ -62,7 +62,7 @@ The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatic
 # Supporting multiple keyboard
 Additional keyboards can be configured in the same userspace with the following guideline:
 * Use distinct keyboard file names for each .json like `<keyboard-name>.json`.
-* Use `#ifdef` conditional directives for keyboard-specific codes.
+* Use `#ifdef` conditional preprocessors for keyboard-specific codes.
 
 The following are some examples.
 
