@@ -176,3 +176,4 @@ qmk compile ~/qmk_firmware/users/newbie/crkbd.json
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree. However it is not without some drawbacks:
 * Dependency on QMK Configurator to modify key map layout
 * .json files are *illegible* for casual inspection
+* `enum` data type used in source (like tap dance) is not shared with `keymap[]`
