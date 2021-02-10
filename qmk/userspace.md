@@ -32,7 +32,7 @@ If everything goes well, it will build a firmware with default settings using yo
 # Customising the firmware
 See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming convention of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
 
-Hardware feature and QMK variables should be configured in `rules.mk` and `config.h`:
+Hardware feature and QMK variables should be configured in `rules.mk` and `config.h`. Both files should be created in the same folder:
 ```
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
