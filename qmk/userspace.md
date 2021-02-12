@@ -30,14 +30,14 @@ If everything goes well, it will build a firmware with default settings using yo
 
 
 # Customising the firmware
-See QMK guide on [customising keyboard behavior](https://docs.qmk.fm/#/custom_quantum_functions) and follow the file naming convention of [QMK userspace](https://docs.qmk.fm/#/feature_userspace).
+There are many customisation options with QMK and you can start with the [custom quantum function page](https://docs.qmk.fm/#/custom_quantum_functions). The file naming conventions of [QMK userspace](https://docs.qmk.fm/#/feature_userspace) is the guide for organising this folder.
 
-Hardware feature and QMK variables should be configured in `rules.mk` and `config.h`:
+Hardware feature and QMK variables are placed in `rules.mk` and `config.h`. Both files should be created in the same folder:
 ```
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead of `keymap.c`, programming codes should be saved in `<name>.c` like:
+Instead of `keymap.c`, custom programming codes should be saved in `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
@@ -56,7 +56,7 @@ qmk_firmware/users/newbie/
 
 0 directories, 4 files
 ```
-The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatically include everything in that folder. Except for `newbie.json`, all files are optional. The .c source file is not required for example if you just simply need some QMK variables changed inside `config.h`.
+The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatically include everything in that folder. Except for `newbie.json`, all files are optional. You can have just `config.h` for modifying QMK variables or just `rules.mk` for enabling one feature.
 
 
 # Supporting multiple keyboard
@@ -176,3 +176,4 @@ qmk flash ~/qmk_firmware/users/newbie/crkbd.json
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree. However it is not without some drawbacks:
 * Dependency on QMK Configurator to modify key map layout
 * .json files are *illegible* for casual inspection
+* `enum` data type used in source (like tap dance) is not shared with `keymap[]`
