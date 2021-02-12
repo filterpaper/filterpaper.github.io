@@ -26,7 +26,7 @@ Building a firmware is as simple as running `qmk compile` on that .json file:
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
-If everything goes well, it will build a firmware with default settings using your custom key layout.
+If everything goes well, it will build a firmware with default settings using your custom key layout. You may also run `qmk flash` instead on the .json file for QMK to follow with flashing the keyboard after a successful build.
 
 
 # Customising the firmware
@@ -165,10 +165,10 @@ qmk_firmware/users/newbie/
 
 0 directories, 5 files
 ```
-Rebuilding each keyboard's firmware is as simple as:
+Rebuilding and flashing each keyboard's firmware is as simple as:
 ```
-qmk compile ~/qmk_firmware/users/newbie/bm40rgb.json
-qmk compile ~/qmk_firmware/users/newbie/crkbd.json
+qmk flash ~/qmk_firmware/users/newbie/bm40rgb.json
+qmk flash ~/qmk_firmware/users/newbie/crkbd.json
 ```
 
 
