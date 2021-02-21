@@ -22,22 +22,22 @@ One time setup of the original repository as a remote "upstream":
 ```
 git remote add upstream https://github.com/qmk/qmk_firmware.git
 ```
-## Sync forked QMK master with QMK upstream
+## Merge upstream/master with fork master
 ```
 git fetch upstream
 git checkout master
 git merge upstream/master
 git push origin master
 ```
-## Overwrite forked master commits with upstream
-If (accidental) master commits are to be discarded, use reset instead of merge:
+## Overwrite forked master commits with upstream/master
+If (accidental) master commits are to be discarded, use reset over write QMK fork master with upstream/master
 ```
 git fetch upstream
 git checkout master
 git reset --hard upstream/master
 git push origin master --force
 ```
-## Sync forked QMK branch with locally updated forked QMK master
+## Sync branch with updated master
 ```
 git checkout <branch>
 git merge master
