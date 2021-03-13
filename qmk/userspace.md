@@ -172,7 +172,9 @@ qmk flash ~/qmk_firmware/users/newbie/crkbd.json
 ```
 
 # Advance wrapper layout
-Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to power users that prefer hand editing key codes in `keymap.c` format. Key map wrapper can be adapted to use with json files. Instead of exporting from the Configurator, create one that reference a *macro* names for each row, like this example of `planck.json`:
+Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to power users that prefers editing layouts in `keymap.c` text format. Key map wrapper can be adapted to use json file format.
+## planck.json
+Instead of exporting from the Configurator, create a `planck.json` file with *macro* names that make sense for each row:
 ```json
 {
     "author": "",
@@ -210,7 +212,8 @@ Exported key map from the [Configurator](https://config.qmk.fm/) may not be favo
     "version": 1
 }
 ```
-Use unique macro names on each for that make sense. Create a `wrappers.h` to map those macro names to the actual key layout in text:
+## wrappers.h
+Create a `wrappers.h` file to map those macro names to actual key layout (like a typically `keymap.c`):
 ```
 #pragma once
 #define LAYOUT_wrapper_ortho_4x12(...) LAYOUT_ortho_4x12(__VA_ARGS__)
@@ -239,7 +242,7 @@ Use unique macro names on each for that make sense. Create a `wrappers.h` to map
 #define ADJUST3      _______, _______, _______, _______, _______, _______, _______, KC_INS,  KC_DEL,  _______, _______, _______
 #define PLANCKADJUST _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ```
-Add the line `#include "wrappers.h"` into `config.h` to include it into the build process. The `qmk` compile or flash process automatically include and expand the key map wrapper:
+Add the line `#include "wrappers.h"` into `config.h`. The `qmk` compile or flash process will combine everything into the firmware:
 ```
 qmk flash ~/qmk_firmware/users/newbie/planck.json
 ```
