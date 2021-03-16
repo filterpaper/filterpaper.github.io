@@ -10,7 +10,7 @@ git push origin <new_branch>
 Commit and push changes of branch to github:
 ```
 git commit -a -m "comments"
-git push origin [new_branch]
+git push origin <new_branch>
 ```
 
 # Setup QMK repository as upstream to sync
