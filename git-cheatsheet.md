@@ -1,5 +1,5 @@
 # Git cheatsheet
-https://docs.qmk.fm/#/newbs_git_using_your_master_branch
+[https://docs.qmk.fm/#/newbs_git_using_your_master_branch](https://docs.qmk.fm/#/newbs_git_using_your_master_branch)
 
 # Branching git commits
 See [managing branches](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches) for details. Create a new branch just for specific changes (skip if branch is already on repo) and push to own repo:
