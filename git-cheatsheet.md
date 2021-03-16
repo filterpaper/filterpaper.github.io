@@ -4,12 +4,8 @@ https://docs.qmk.fm/#/newbs_git_using_your_master_branch
 # Branching git commits
 See [managing branches](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches) for details. Create a new branch just for specific changes (skip if branch is already on repo) and push to own repo:
 ```
-git checkout -b [new_branch]
-git push origin [new_branch]
-```
-Switch to that branch to make changes:
-```
-git checkout [new_branch]
+git checkout -b <new_branch>
+git push origin <new_branch>
 ```
 Commit and push changes of branch to github:
 ```
@@ -22,26 +18,33 @@ One time setup of the original repository as a remote "upstream":
 ```
 git remote add upstream https://github.com/qmk/qmk_firmware.git
 ```
-## Merge upstream/master with fork master
+## Merge upstream/master with fork (origin) master
 ```
 git fetch upstream
 git checkout master
 git merge upstream/master
 git push origin master
 ```
-## Overwrite forked master commits with upstream/master
+## Sync branch with updated (origin) master
+### Using merge
+```
+git checkout <branch>
+git merge master
+git push origin <branch>
+```
+### Using rebase
+```
+git checkout <branch>
+git rebase -i master
+git push origin <branch>
+```
+## Overwrite forked (origin) master commits with upstream/master
 If (accidental) master commits are to be discarded, use reset over write QMK fork master with upstream/master
 ```
 git fetch upstream
 git checkout master
 git reset --hard upstream/master
 git push origin master --force
-```
-## Sync branch with updated master
-```
-git checkout <branch>
-git merge master
-git push origin <branch>
 ```
 
 # Pruning branches
