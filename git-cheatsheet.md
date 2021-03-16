@@ -33,17 +33,18 @@ git merge master
 git push origin <branch>
 ```
 ### Using rebase
+Recommended way to ensure that local branch changes are placed ahead of recent master commits:
 ```
 git checkout <branch>
 git rebase -i master
 git push origin <branch>
 ```
-## Overwrite forked (origin) master commits with upstream/master
-If (accidental) master commits are to be discarded, use reset over write QMK fork master with upstream/master
+## Reset (origin) master commits with upstream/master
+If changes are not expected on master, `reset` ensures that it is updated with unmodified upstream copy:
 ```
 git fetch upstream
 git checkout master
-git reset --hard upstream/master
+git reset upstream/master --hard
 git push origin master --force
 ```
 
