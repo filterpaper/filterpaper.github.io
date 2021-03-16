@@ -250,3 +250,6 @@ The added advantage of using wrapper is ability to share layouts with different 
 
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
+
+# Links
+[QMK cheatsheet](https://jayliu50.github.io/qmk-cheatsheet/)
