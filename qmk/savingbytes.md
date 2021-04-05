@@ -38,7 +38,7 @@ void render_status(void) {
 	render_layer_state();
 }
 ```
-## Multiple functions inside `if` condition
+## Multiple functions inside "if" condition
 The first `if` statement evaluates two conditions that involves two external function call. Machine codes generated can be space consuming:
 ```c
 if (get_mods() & MOD_MASK_SHIFT || host_keyboard_led_state().caps_lock) { render_luna_bark(); }
@@ -131,7 +131,7 @@ static void animate_cat(void) {
 	}
 }
 ```
-## Decreasing for Loop
+## Decreasing "for" Loop
 The following is modifier key lighting code, using a typical `for` loop with incrementing counter:
 ```c
 if (get_mods() & MOD_MASK_CSAG) {
@@ -152,7 +152,7 @@ for (uint_fast8_t i = DRIVER_LED_TOTAL; i !=0; --i) {
 ```
 
 
-## Use `if` instead of `switch` for non-sequential
+## Use "if" instead of "switch" for non-sequential
 The `switch` statement is easy to read for multi-choice condition, but it can also be space consuming when matched cases are not sequential. In the following "capsword" function example, the first switch statement filters for modifier and layer tap keycodes to apply a bitmask:
 ```c
 static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
@@ -191,7 +191,7 @@ static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) 
 	}
 }
 ```
-## Use `switch` instead of `if` for sequential matches
+## Use "switch" instead of "if" for sequential matches
 On the other hand, `switch` statements will generate smaller code instead of `if`-`else` statements. This is @soundmonster's statement to evaluate layer state for OLED display:
 ```c
 if (layer_state_is(ADJ)) { oled_write_P(adjust_layer, false); }
