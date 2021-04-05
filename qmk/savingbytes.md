@@ -2,9 +2,9 @@
 
 It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines.
 
-However easy to understand codes may not be the most efficient with execution and space. The latter is a premium for 28672 bytes controllers like the Elite-C MCU, especially when you try to squeeze in RGB features and OLED animation.
+However easy to understand codes may not be the most efficient with execution and space. Storage is a premium for 28672 bytes controllers like the Elite-C MCU, especially when you try to squeeze in RGB features and OLED animation.
 
-If you are over the firmware limit and looking to shave a few bytes off the QMK compiled output, there are a couple of C code tricks that can employed if `LTO_ENABLE = yes` didn't help.
+If you slightly over the firmware limit and looking to shave a few bytes off the QMK compiled output, there are a couple of C code tricks that can employed if `LTO_ENABLE = yes` didn't help. These suggestions can make your code slightly harder to read.
 
 ## OLED functions are expensive
 This is an easy to write OLED display function:
@@ -38,10 +38,99 @@ void render_status(void) {
 	render_layer_state();
 }
 ```
+## Multiple functions inside `if` condition
+The first `if` statement evaluates two conditions that involves two external function call. Machine codes generated can be space consuming:
+```c
+if (get_mods() & MOD_MASK_SHIFT || host_keyboard_led_state().caps_lock) { render_luna_bark(); }
+else if (get_mods() & MOD_MASK_CAG) { render_luna_sneak(); }
+else if (elapsed_time <LUNA_FRAME_DURATION*2) { render_luna_run(); }
+else if (elapsed_time <LUNA_FRAME_DURATION*15) { render_luna_walk(); }
+else { render_luna_sit(); }
+```
+Getting the boolean output of `host_keyboard_led_state().caps_lock` into a variable and using that in the `if` statement will save 26 bytes:
+```c
+bool const caps = host_keyboard_led_state().caps_lock;
+if (get_mods() & MOD_MASK_SHIFT || caps) { render_luna_bark(); }
+else if (get_mods() & MOD_MASK_CAG) { render_luna_sneak(); }
+else if (elapsed_time <LUNA_FRAME_DURATION*2) { render_luna_run(); }
+else if (elapsed_time <LUNA_FRAME_DURATION*15) { render_luna_walk(); }
+else { render_luna_sit(); }
+```
 ## Avoid repeated function with variables
+This is the vanilla Bongocat animation function, driven by WPM: 4152
+```c
+uint32_t anim_timer = 0;
+uint32_t anim_sleep = 0;
 
-## Multiple calls in if statements
+static void animate_cat(void) {
 
+	void animation_phase(void) {
+		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
+		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
+		else { render_cat_idle(); }
+	}
+
+	// Animate on WPM, turn off OLED on idle
+	if (get_current_wpm() >0) {
+		oled_on();
+		if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
+			anim_timer = timer_read32();
+			animation_phase();
+		}
+		anim_sleep = timer_read32();
+	} else {
+		if (timer_elapsed32(anim_sleep) >OLED_TIMEOUT) {
+			oled_off();
+		} else {
+			if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
+				anim_timer = timer_read32();
+				animation_phase();
+			}
+		}
+	}
+}
+```
+The main animation `if`-`else` statements is slightly obfuscated and calls `animation_phase()` twice. Reducing repeated calls and eliminating the sleep timer reduces code by 182 bytes:
+```c
+uint32_t anim_timer = 0;
+
+static void animate_cat(void) {
+
+	void animation_phase(void) {
+		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
+		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
+		else { render_cat_idle(); }
+	}
+
+	if (!get_current_wpm()) {
+		oled_off();
+	} else if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
+		anim_timer = timer_read32();
+		animation_phase();
+	}
+}
+```
+## Use smaller unsigned integers
+In the last example above `anim_timer` is an unsigned 32-bit integer but `ANIM_FRAME_DURATION` is 200, the maximum value of the `if` statement. Reducing that variable to 16-bit will save 50 bytes:
+```c
+uint16_t anim_timer = 0;
+
+static void animate_cat(void) {
+
+	void animation_phase(void) {
+		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
+		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
+		else { render_cat_idle(); }
+	}
+
+	if (!get_current_wpm()) {
+		oled_off();
+	} else if (timer_elapsed(anim_timer) >ANIM_FRAME_DURATION) {
+		anim_timer = timer_read();
+		animation_phase();
+	}
+}
+```
 ## Decreasing for Loop
 The following is modifier key lighting code, using a typical `for` loop with incrementing counter:
 ```c
@@ -53,7 +142,7 @@ if (get_mods() & MOD_MASK_CSAG) {
 	}
 }
 ```
-You can save 10 bytes by decrementing to 0 because machine language handles zero state in lesser code:
+You can save 10 bytes by decrementing to 0 because machine language exits zero state with lesser code:
 ```c
 for (uint_fast8_t i = DRIVER_LED_TOTAL; i !=0; --i) {
 	if (HAS_FLAGS(g_led_config.flags[i-1], LED_FLAG_MODIFIER)) {
@@ -63,6 +152,66 @@ for (uint_fast8_t i = DRIVER_LED_TOTAL; i !=0; --i) {
 ```
 
 
-## use IF istead of switch for non sequential
-
-## use switch if sequential
+## Use `if` instead of `switch` for non-sequential
+The `switch` statement is easy to read for multi-choice condition, but it can also be space consuming when matched cases are not sequential. In the following "capsword" function example, the first switch statement filters for modifier and layer tap keycodes to apply a bitmask:
+```c
+static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
+	// Get base key code of mod or layer tap with bitmask
+	switch (keycode) {
+	case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+	case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+		if (record->tap.count) { keycode = keycode & 0xFF; }
+	}
+	// Toggle caps lock with the following key codes
+	switch (keycode) {
+	case KC_TAB:
+	case KC_ESC:
+	case KC_SPC:
+	case KC_ENT:
+	case KC_DOT:
+		if (record->event.pressed) { tap_code(KC_CAPS); }
+	}
+}
+```
+The `switch` statement is comparing cases that are not sequential. Replacing that with a multi-conditional statement can save 6 bytes:
+```c
+static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
+	// Get base key code of mod or layer tap with bitmask
+	if (((keycode >=QK_MOD_TAP && keycode <=QK_MOD_TAP_MAX) ||
+		(keycode >=QK_LAYER_TAP && keycode <=QK_LAYER_TAP_MAX)) &&
+		(record->tap.count)) { keycode = keycode & 0xFF; }
+	// Toggle caps lock with the following key codes
+	switch (keycode) {
+	case KC_TAB:
+	case KC_ESC:
+	case KC_SPC:
+	case KC_ENT:
+	case KC_DOT:
+		if (record->event.pressed) { tap_code(KC_CAPS); }
+	}
+}
+```
+## Use `switch` instead of `if` for sequential matches
+On the other hand, `switch` statements will generate smaller code instead of `if`-`else` statements. This is @soundmonster's statement to evaluate layer state for OLED display:
+```c
+if (layer_state_is(ADJ)) { oled_write_P(adjust_layer, false); }
+else if (layer_state_is(RSE)) { oled_write_P(raise_layer, false); }
+else if (layer_state_is(LWR)) { oled_write_P(lower_layer, false); }
+else { oled_write_P(default_layer, false); }
+```
+Layer state increases sequentially so replacing that with `switch` case comparison saves 22 bytes:
+```c
+switch (get_highest_layer(state)) {
+	case ADJ:
+		oled_write_P(adjust_layer, false);
+		break;
+	case RSE:
+		oled_write_P(raise_layer, false);
+		break;
+	case LWR:
+		oled_write_P(lower_layer, false);
+		break;
+	default:
+		oled_write_P(default_layer, false);
+}
+```
