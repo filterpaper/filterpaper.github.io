@@ -38,7 +38,7 @@ void render_status(void) {
 	render_layer_state();
 }
 ```
-## Multiple functions inside "if" condition
+## Avoid multiple functions inside "if" condition
 The first `if` statement evaluates two conditions that involves two external function call. Machine codes generated can be space consuming:
 ```c
 if (get_mods() & MOD_MASK_SHIFT || host_keyboard_led_state().caps_lock) { render_luna_bark(); }
@@ -50,27 +50,26 @@ else { render_luna_sit(); }
 Getting the boolean output of `host_keyboard_led_state().caps_lock` into a variable and using that in the `if` statement will save 26 bytes:
 ```c
 bool const caps = host_keyboard_led_state().caps_lock;
+
 if (get_mods() & MOD_MASK_SHIFT || caps) { render_luna_bark(); }
 else if (get_mods() & MOD_MASK_CAG) { render_luna_sneak(); }
 else if (elapsed_time <LUNA_FRAME_DURATION*2) { render_luna_run(); }
 else if (elapsed_time <LUNA_FRAME_DURATION*15) { render_luna_walk(); }
 else { render_luna_sit(); }
 ```
-## Avoid repeated function with variables
-This is the vanilla Bongocat animation function, driven by WPM: 4152
+## Avoid repeated calls:
+This is the vanilla Bongocat animation function, driven by WPM:
 ```c
 uint32_t anim_timer = 0;
 uint32_t anim_sleep = 0;
 
 static void animate_cat(void) {
-
 	void animation_phase(void) {
 		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
 		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
 		else { render_cat_idle(); }
 	}
 
-	// Animate on WPM, turn off OLED on idle
 	if (get_current_wpm() >0) {
 		oled_on();
 		if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
@@ -90,12 +89,11 @@ static void animate_cat(void) {
 	}
 }
 ```
-The main animation `if`-`else` statements is slightly obfuscated and calls `animation_phase()` twice. Reducing repeated calls and eliminating the sleep timer reduces code by 182 bytes:
+The main animation `if`-`else` statements is slightly obfuscated and calls `animation_phase()` twice. Reducing that and eliminating the sleep timer saves 182 bytes in firmware size:
 ```c
 uint32_t anim_timer = 0;
 
 static void animate_cat(void) {
-
 	void animation_phase(void) {
 		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
 		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
@@ -116,7 +114,6 @@ In the last example above `anim_timer` is an unsigned 32-bit integer but `ANIM_F
 uint16_t anim_timer = 0;
 
 static void animate_cat(void) {
-
 	void animation_phase(void) {
 		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
 		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
@@ -150,8 +147,6 @@ for (uint_fast8_t i = DRIVER_LED_TOTAL; i !=0; --i) {
 	}
 }
 ```
-
-
 ## Use "if" instead of "switch" for non-sequential
 The `switch` statement is easy to read for multi-choice condition, but it can also be space consuming when matched cases are not sequential. In the following "capsword" function example, the first switch statement filters for modifier and layer tap keycodes to apply a bitmask:
 ```c
@@ -173,7 +168,7 @@ static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) 
 	}
 }
 ```
-The `switch` statement is comparing cases that are not sequential. Replacing that with a multi-conditional statement can save 6 bytes:
+The `switch` statement is comparing cases that are not sequential. Replacing that with a multi-conditional statement can save 6 bytes or more:
 ```c
 static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
@@ -192,14 +187,14 @@ static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) 
 }
 ```
 ## Use "switch" instead of "if" for sequential matches
-On the other hand, `switch` statements will generate smaller code instead of `if`-`else` statements. This is @soundmonster's statement to evaluate layer state for OLED display:
+On the other hand, `switch` statements will generate smaller code than `if`-`else` for sequential cases. This is a conditional code to display OLED layer state:
 ```c
 if (layer_state_is(ADJ)) { oled_write_P(adjust_layer, false); }
 else if (layer_state_is(RSE)) { oled_write_P(raise_layer, false); }
 else if (layer_state_is(LWR)) { oled_write_P(lower_layer, false); }
 else { oled_write_P(default_layer, false); }
 ```
-Layer state increases sequentially so replacing that with `switch` case comparison saves 22 bytes:
+Layer state enumerates sequentially—replacing that with `switch` condition will save 22 bytes:
 ```c
 switch (get_highest_layer(state)) {
 	case ADJ:
