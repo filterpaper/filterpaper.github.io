@@ -210,3 +210,59 @@ switch (get_highest_layer(state)) {
 		oled_write_P(default_layer, false);
 }
 ```
+## Replace function inside conditional statements
+Function calls inside conditional `if` statements can contribute to code bloat. This is my Bongocat code using timer instead of absolute WPM:
+```c
+void render_bongocat(void) {
+	// WPM triggered typing timer
+	static uint_fast8_t prev_wpm = 0;
+	static uint_fast32_t tap_timer = 0;
+
+	if (get_current_wpm() >prev_wpm) { tap_timer = timer_read32(); }
+	prev_wpm = get_current_wpm();
+
+	static uint_fast16_t anim_timer = 0;
+
+	void animation_phase(void) {
+		oled_clear();
+		if (timer_elapsed32(tap_timer) <FRAME_DURATION*3) { render_cat_tap(); }
+		else if (timer_elapsed32(tap_timer) <FRAME_DURATION*10) { render_cat_prep(); }
+		else { render_cat_idle(); }
+	}
+
+	if (timer_elapsed32(tap_timer) >OLED_TIMEOUT) {
+		oled_off();
+	} else if (timer_elapsed(anim_timer) >FRAME_DURATION) {
+		anim_timer = timer_read();
+		animation_phase();
+	}
+}
+```
+External function `timer_elapsed32(tap_timer)` is called multiple times to evaluate elapsed time. By replacing all 3 with an integer `keystroke`, 80 bytes is eliminated from the final firmware:
+```c
+void render_bongocat(void) {
+	// WPM triggered typing timer
+	static uint_fast8_t prev_wpm = 0;
+	static uint_fast32_t tap_timer = 0;
+
+	if (get_current_wpm() >prev_wpm) { tap_timer = timer_read32(); }
+	prev_wpm = get_current_wpm();
+
+	static uint_fast16_t anim_timer = 0;
+	uint_fast32_t keystroke = timer_elapsed32(tap_timer);
+
+	void animation_phase(void) {
+		oled_clear();
+		if (keystroke <FRAME_DURATION*3) { render_cat_tap(); }
+		else if (keystroke <FRAME_DURATION*10) { render_cat_prep(); }
+		else { render_cat_idle(); }
+	}
+
+	if (keystroke >OLED_TIMEOUT) {
+		oled_off();
+	} else if (timer_elapsed(anim_timer) >FRAME_DURATION) {
+		anim_timer = timer_read();
+		animation_phase();
+	}
+}
+```
