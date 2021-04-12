@@ -262,5 +262,5 @@ void render_bongocat(void) {
 	}
 }
 ```
-
+## Quote
 "It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines."
