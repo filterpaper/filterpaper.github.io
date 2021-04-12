@@ -1,10 +1,6 @@
 # Saving Bytes with QMK
 
-It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines.
-
-However easy to understand codes may not be the most efficient with execution and space. Storage is a premium for 28672 bytes controllers like the Elite-C MCU, especially when you try to squeeze in RGB features and OLED animation.
-
-If you slightly over the firmware limit and looking to shave a few bytes off the QMK compiled output, there are a couple of C code tricks that can employed if `LTO_ENABLE = yes` didn't help. These suggestions can make your code slightly harder to read.
+My CRKBD firmware went above its size limit by 100 bytes at one point, even with `LTO_ENABLE = yes`. Documented below are various ways to code QMK with for better space efficiency if you need to bring the firmware size down by just a bit to fit inside the MCU.
 
 ## OLED functions are expensive
 This is an easy to write OLED display function:
@@ -23,7 +19,7 @@ void render_status(void) {
 	render_layer_state();
 }
 ```
-However `oled_set_cursor()` is costly in byte usage. If it is used to just skip a few lines, that can replaced by rendering carriage return inside the initial `oled_write_P()`, saving 34 bytes:
+However `oled_set_cursor()` is costly in bytes. If it is used to just skip a few lines, that can replaced by rendering carriage return inside the initial `oled_write_P()`, saving 34 bytes:
 ```c
 static void render_logo(void) {
 	oled_write_P(PSTR("corne\n\n"), false);
@@ -39,7 +35,7 @@ void render_status(void) {
 }
 ```
 ## Avoid multiple functions inside "if" condition
-The first `if` statement evaluates two conditions that involves two external function call. Machine codes generated can be space consuming:
+The first `if` statement evaluates two conditions that invokes two external function call. Machine codes generated can be space consuming:
 ```c
 if (get_mods() & MOD_MASK_SHIFT || host_keyboard_led_state().caps_lock) { render_luna_bark(); }
 else if (get_mods() & MOD_MASK_CAG) { render_luna_sneak(); }
@@ -47,7 +43,7 @@ else if (elapsed_time <LUNA_FRAME_DURATION*2) { render_luna_run(); }
 else if (elapsed_time <LUNA_FRAME_DURATION*15) { render_luna_walk(); }
 else { render_luna_sit(); }
 ```
-Getting the boolean output of `host_keyboard_led_state().caps_lock` into a variable and using that in the `if` statement will save 26 bytes:
+Saving the boolean output of `host_keyboard_led_state().caps_lock` into a variable to use in the `if` statement saved 26 bytes:
 ```c
 bool const caps = host_keyboard_led_state().caps_lock;
 
@@ -65,23 +61,23 @@ uint32_t anim_sleep = 0;
 
 static void animate_cat(void) {
 	void animation_phase(void) {
-		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
-		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
+		if (get_current_wpm() > TAP_SPEED) { render_cat_tap(); }
+		else if (get_current_wpm() > IDLE_SPEED) { render_cat_prep(); }
 		else { render_cat_idle(); }
 	}
 
 	if (get_current_wpm() >0) {
 		oled_on();
-		if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
+		if (timer_elapsed32(anim_timer) > FRAME_DURATION) {
 			anim_timer = timer_read32();
 			animation_phase();
 		}
 		anim_sleep = timer_read32();
 	} else {
-		if (timer_elapsed32(anim_sleep) >OLED_TIMEOUT) {
+		if (timer_elapsed32(anim_sleep) > OLED_TIMEOUT) {
 			oled_off();
 		} else {
-			if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
+			if (timer_elapsed32(anim_timer) > FRAME_DURATION) {
 				anim_timer = timer_read32();
 				animation_phase();
 			}
@@ -89,40 +85,40 @@ static void animate_cat(void) {
 	}
 }
 ```
-The main animation `if`-`else` statements is slightly obfuscated and calls `animation_phase()` twice. Reducing that and eliminating the sleep timer saves 182 bytes in firmware size:
+The main animation `if`-`else` statements is slightly obfuscated and calls `animation_phase()` twice. Reducing that and eliminating the sleep timer saved 182 bytes in firmware size:
 ```c
 uint32_t anim_timer = 0;
 
 static void animate_cat(void) {
 	void animation_phase(void) {
-		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
-		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
+		if (get_current_wpm() > TAP_SPEED) { render_cat_tap(); }
+		else if (get_current_wpm() > IDLE_SPEED) { render_cat_prep(); }
 		else { render_cat_idle(); }
 	}
 
 	if (!get_current_wpm()) {
 		oled_off();
-	} else if (timer_elapsed32(anim_timer) >ANIM_FRAME_DURATION) {
+	} else if (timer_elapsed32(anim_timer) > FRAME_DURATION) {
 		anim_timer = timer_read32();
 		animation_phase();
 	}
 }
 ```
 ## Use smaller unsigned integers
-In the last example above `anim_timer` is an unsigned 32-bit integer but `ANIM_FRAME_DURATION` is 200, the maximum value of the `if` statement. Reducing that variable to 16-bit will save 50 bytes:
+In the last example above `anim_timer` is an unsigned 32-bit integer but `FRAME_DURATION` is 200, the maximum value evaluated by that `if` statement. Reducing that variable to unsigned 16-bit saved another 50 bytes:
 ```c
 uint16_t anim_timer = 0;
 
 static void animate_cat(void) {
 	void animation_phase(void) {
-		if (get_current_wpm() >TAP_SPEED) { render_cat_tap(); }
-		else if (get_current_wpm() >IDLE_SPEED) { render_cat_prep(); }
+		if (get_current_wpm() > TAP_SPEED) { render_cat_tap(); }
+		else if (get_current_wpm() > IDLE_SPEED) { render_cat_prep(); }
 		else { render_cat_idle(); }
 	}
 
 	if (!get_current_wpm()) {
 		oled_off();
-	} else if (timer_elapsed(anim_timer) >ANIM_FRAME_DURATION) {
+	} else if (timer_elapsed(anim_timer) > FRAME_DURATION) {
 		anim_timer = timer_read();
 		animation_phase();
 	}
@@ -139,7 +135,7 @@ if (get_mods() & MOD_MASK_CSAG) {
 	}
 }
 ```
-You can save 10 bytes by decrementing to 0 because machine language exits zero state with lesser code:
+You can save 10 bytes by decrementing to 0 because machine language will exit zero state with lesser code:
 ```c
 for (uint_fast8_t i = DRIVER_LED_TOTAL; i !=0; --i) {
 	if (HAS_FLAGS(g_led_config.flags[i-1], LED_FLAG_MODIFIER)) {
@@ -168,7 +164,7 @@ static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) 
 	}
 }
 ```
-The `switch` statement is comparing cases that are not sequential. Replacing that with a multi-conditional statement can save 6 bytes or more:
+The `switch` statement is comparing cases that are not sequential. Replacing that with a multi-conditional statement saved 6 bytes:
 ```c
 static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
@@ -194,7 +190,7 @@ else if (layer_state_is(RSE)) { oled_write_P(raise_layer, false); }
 else if (layer_state_is(LWR)) { oled_write_P(lower_layer, false); }
 else { oled_write_P(default_layer, false); }
 ```
-Layer state enumerates sequentially—replacing that with `switch` condition will save 22 bytes:
+Layer state enumerates sequentially—replacing them with `switch` condition will save 22 bytes:
 ```c
 switch (get_highest_layer(state)) {
 	case ADJ:
@@ -238,7 +234,7 @@ void render_bongocat(void) {
 	}
 }
 ```
-External function `timer_elapsed32(tap_timer)` is called multiple times to evaluate elapsed time. By replacing all 3 with an integer `keystroke`, 80 bytes is eliminated from the final firmware:
+External function `timer_elapsed32(tap_timer)` is called multiple times to evaluate elapsed time. Replacing all 3 with an integer `keystroke` reduced firmware size by 80 bytes:
 ```c
 void render_bongocat(void) {
 	// WPM triggered typing timer
@@ -266,3 +262,5 @@ void render_bongocat(void) {
 	}
 }
 ```
+
+"It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines."
