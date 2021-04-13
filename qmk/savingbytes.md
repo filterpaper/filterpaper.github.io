@@ -34,7 +34,7 @@ void render_status(void) {
 	render_layer_state();
 }
 ```
-## Avoid multiple functions inside "if" condition
+## Avoid multiple functions within "if" statements
 The first `if` statement evaluates two conditions that invokes two external function call. Machine codes generated can be space consuming:
 ```c
 if (get_mods() & MOD_MASK_SHIFT || host_keyboard_led_state().caps_lock) { render_luna_bark(); }
@@ -164,7 +164,7 @@ static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) 
 	}
 }
 ```
-The `switch` statement is comparing cases that are not sequential. Replacing that with a multi-conditional statement saved 6 bytes:
+That `switch` statement is comparing mod and layer tap cases that are not sequential. Replacing that with a multi-conditional `if` statement saved 6 bytes:
 ```c
 static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
@@ -190,7 +190,7 @@ else if (layer_state_is(RSE)) { oled_write_P(raise_layer, false); }
 else if (layer_state_is(LWR)) { oled_write_P(lower_layer, false); }
 else { oled_write_P(default_layer, false); }
 ```
-Layer state enumerates sequentially—replacing them with `switch` condition will save 22 bytes:
+Layer state enumerates sequentially—so using `switch` instead will save 22 bytes:
 ```c
 switch (get_highest_layer(state)) {
 	case ADJ:
@@ -206,7 +206,7 @@ switch (get_highest_layer(state)) {
 		oled_write_P(default_layer, false);
 }
 ```
-## Replace function inside conditional statements
+## Replace external functions with variables inside conditional statements
 Function calls inside conditional `if` statements can contribute to code bloat. This is my Bongocat code using timer instead of absolute WPM:
 ```c
 void render_bongocat(void) {
