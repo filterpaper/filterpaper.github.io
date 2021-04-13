@@ -128,7 +128,7 @@ static void animate_cat(void) {
 The following is modifier key lighting code, using a typical `for` loop with incrementing counter:
 ```c
 if (get_mods() & MOD_MASK_CSAG) {
-	for (uint_fast8_t i = 0; i <DRIVER_LED_TOTAL; ++i) {
+	for (uint_fast8_t i = 0; i < DRIVER_LED_TOTAL; ++i) {
 		if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_MODIFIER)) {
 			rgb_matrix_set_color(i, RGB_MODS);
 		}
@@ -137,9 +137,11 @@ if (get_mods() & MOD_MASK_CSAG) {
 ```
 You can save 10 bytes by decrementing to 0 because machine language will exit zero state with lesser code:
 ```c
-for (uint_fast8_t i = DRIVER_LED_TOTAL; i !=0; --i) {
-	if (HAS_FLAGS(g_led_config.flags[i-1], LED_FLAG_MODIFIER)) {
-		rgb_matrix_set_color(i-1, RGB_MODS);
+if (get_mods() & MOD_MASK_CSAG) {
+	for (uint_fast8_t i = DRIVER_LED_TOTAL; i > 0; --i) {
+		if (HAS_FLAGS(g_led_config.flags[i-1], LED_FLAG_MODIFIER)) {
+			rgb_matrix_set_color(i-1, RGB_MODS);
+		}
 	}
 }
 ```
@@ -168,8 +170,8 @@ That `switch` statement is comparing mod and layer tap cases that are not sequen
 ```c
 static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
-	if (((keycode >=QK_MOD_TAP && keycode <=QK_MOD_TAP_MAX) ||
-		(keycode >=QK_LAYER_TAP && keycode <=QK_LAYER_TAP_MAX)) &&
+	if (((QK_MOD_TAP <= keycode && keycode <= QK_MOD_TAP_MAX) ||
+		(QK_LAYER_TAP <= keycode && keycode <= QK_LAYER_TAP_MAX)) &&
 		(record->tap.count)) { keycode = keycode & 0xFF; }
 	// Toggle caps lock with the following key codes
 	switch (keycode) {
