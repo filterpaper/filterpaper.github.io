@@ -264,5 +264,18 @@ void render_bongocat(void) {
 	}
 }
 ```
+## Xorshift pseudo random number generator
+The C library `rand()` is huge. If simple random numbers is required for insensitive use like animation or lighting, an xorshift function will save 200 bytes:
+```c
+static uint_fast8_t prng(void) {
+	// By Brad Forschinger
+	static uint_fast8_t x = 1,y = 1;
+	uint_fast8_t t = (x ^ (x << 5));
+	x = y;
+	return y = (y ^ (y >> 1)) ^ (t ^ (t >> 3));
+}
+```
+Replace integers with 16-bit if required.
+
 ## Quote
 "It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines."
