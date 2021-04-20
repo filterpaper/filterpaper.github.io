@@ -4,9 +4,9 @@ A simple suggestion on randomising RGB lights in the QMK discord led me down the
 # Evaluating PRNGs
 While pseudorandom number generators are not of cryptography quality, we do want an algorithm produces randomness that do not repeat themselves when are are used for animation and visual lighting. Rendering the PRNG output as bitmap image is a simple way to check for patterns with [this code](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries), replacing `rngfunction()` with the PRNG function:
 
+{::options parse_block_html="true" /}
 <details>
 <summary>Show code</summary>
-<p>
 
 ```c
 void generate_image(uint_fast64_t (*rngfunction)(), char filename[]) {
@@ -77,8 +77,8 @@ void generate_image(uint_fast64_t (*rngfunction)(), char filename[]) {
 }
 ```
 
-</p>
 </details>
+{::options parse_block_html="false" /}
 
 # 8-bit PRNG
 ## Tzarc's XORshift
@@ -92,10 +92,27 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-His code is a modified XORshift using shifted two 8-bit variables. Its small code base is 220 bytes smaller than `rand()`. Visualising its output showed that it will repeat itself:
+His code is a modified XORshift using shifted two 8-bit variables. Its small code base is 220 bytes smaller than `rand()`. Visualising its output showed repeated patterns:
+
 ![tzarc_prng](images/tzarc_prng.bmp)
 
+Repetition is not severe, but the output will immediately fail tests such as [PractRand](http://pracrand.sourceforge.net/).j
 
+## PCG 8-bit
+Melissa O'Neill published her paper and PCG family of codes at [www.pcg-random.org](https://www.pcg-random.org/). An 8-bit implementation is among the [pcg-c-basic librar](https://github.com/imneme/pcg-c-basic). Adapted to a single seeded function below is the 16-bit MCG with 8-bit output using xorshift and random-rotation:
+```c
+// pcg_mcg_16_xsh_rr_8_random_r
+uint8_t pcg8(void) {
+	static uint16_t state = 0x6835;
+
+	uint16_t oldstate = state;
+	state = state * 12829U;
+
+	uint8_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
+	uint32_t rot = oldstate >> 13U;
+	return (value >> rot) | (value << ((- rot) & 7));
+}
+```
 
 
 rand() 10582 bytes free
