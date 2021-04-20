@@ -127,8 +127,9 @@ static uint_fast16_t rnd_xorshift_16(void) {
 }
 ```
 # 8-bit PRNGs
+8-bit space is where limitation of its size become apparently. Poorly implemented linear-feedback shift register (LFSR) codes will show render repeated patterns on bitmap. Almost all of them will fail most PractRand tests.
 ## Tzarc's XORshift
-@tzarc proposed [his version](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) that follows:
+@tzarc's [version of XORshift](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) was the start of this rabbit hole and his code follows:
 ```c
 static uint8_t prng(void) {
 	static uint8_t s = 0xAA, a = 0;
@@ -138,14 +139,12 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-His code is a modified XORshift using shifted two 8-bit variables. Its small code base is 220 bytes smaller than `rand()`. Visualising its output showed repeated patterns:
+It is a modified XORshift using two 8-bit variables and its small code base is 220 bytes smaller than `rand()`. The output fails all PractRand's test and there are visual patterns to its bitmap output:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
-Repetition is not severe, but the output will immediately fail tests such as [PractRand](http://pracrand.sourceforge.net/).j
-
-## PCG 8-bit
-An 8-bit implementation is among the [pcg-c-basic librar](https://github.com/imneme/pcg-c-basic). Adapted to a single seeded function below is the 16-bit MCG with 8-bit output using xorshift and random-rotation:
+## PCG8
+An 8-bit implementation of PCG can be found in the [pcg-c-basic library](https://github.com/imneme/pcg-c-basic). Adapted to a single seeded function below is the 16-bit MCG with 8-bit output using xorshift and random-rotation:
 ```c
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
@@ -159,7 +158,26 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
+Unlike its larger cousins, the 8-bit version doesn't work as well—strong visual pattern suggest that the output repeat itself with small samples.
+![pcg8](images/pcg8.bmp)
 
+## JSF8
+Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/smallprng.html), with a detailed [description by the author](http://burtleburtle.net/bob/rand/talksmall.html). His code is dubbed Jenkins Fast Small or JSF, and [was adapted](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html) into 16 and this 8-bit version:
+```c
+uint8_t jsf8(void) {
+	static uint8_t a = 0xf1;
+	static uint8_t b = 0xee, c = 0xee, d = 0xee;
+
+	uint8_t e = a - ((b << 1)|(b >> 7));
+	a = b ^ ((c << 4)|(c >> 4));
+	b = c + d;
+	c = d + e;
+	d = e + a;
+	return d;
+}
+```
+And behold, this tiny 8-bit algorithm passes the visual bitmap test, PractRand and is smaller than `rand()`, making it the perfect PRNG for embedded code!
+![jsf8](images/jsf8.bmp)
 
 rand() 10582 bytes free
 tzard() 10802 bytes free
