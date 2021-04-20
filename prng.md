@@ -60,8 +60,8 @@ For more serious use of PRNG output, the simple [PractRand tool](http://pracrand
 
 # 32 and 64-bit PRNGs
 32 and 64-bit realm is where one can find many PRNGs—large variables has sufficient space for mathematical operations. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes will be larger than `rand()`. Nonetheless, listed in this section are interesting ones that passes PractRand tests.
-## PCG 32-bit
-Melissa O'Neill published her paper and PCG family of codes at [www.pcg-random.org](https://www.pcg-random.org/). Her most robust [PCG32 code](https://www.pcg-random.org/download.html) has many versions—the following is a seeded version of 64-bit MCG with XORshift and random-rotation:
+## PCG32
+Melissa O'Neill published her paper and PCG (permuted congruential generator) family of codes at [www.pcg-random.org](https://www.pcg-random.org/). Her most robust [PCG32 code](https://www.pcg-random.org/download.html) has many versions—the following is a seeded version of 64-bit MCG with XORshift and random-rotation:
 ```c
 // pcg_mcg_64_xsh_rr_32_random_r
 static uint_fast32_t pcg32(void) {
@@ -97,6 +97,33 @@ static uint_fast64_t xoroshiro128pp(void) {
 	s1 = rol64(t1, 28); // c
 
 	return result;
+}
+```
+# 16-bit PRNGs
+16-bit is exponentially smaller and more manageable for embedded firmware–its output can be casted as `unint8_t` as needed.
+## PCG16
+The 16-bit version of PCG code is robust for mo† of PractRand's test and is x larger than `rand()`:
+```c
+// pcg_mcg_32_xsh_rr_16_random_r
+static uint16_t pcg16(void) {
+	static uint32_t state = 0x406832dd;
+
+	uint32_t oldstate = state;
+	state = state * 747796405U + 1U;
+
+	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
+	uint32_t rot = oldstate >> 28U;
+	return (value >> rot) | (value << ((- rot) & 15));
+}
+```
+## xorshift16
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift to the following 2-register code function. Smaller than `rand()`.
+```c
+static uint_fast16_t rnd_xorshift_16(void) {
+	static uint_fast16_t x = 1, y = 1;
+	uint_fast16_t t = (x ^ (x << 5U));
+	x = y * 3;
+	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
 }
 ```
 # 8-bit PRNGs
