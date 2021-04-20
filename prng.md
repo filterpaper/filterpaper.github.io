@@ -6,6 +6,7 @@ While pseudorandom number generators are not of cryptography quality, we do want
 
 <details>
 <summary>Show code</summary>
+<p>
 
 ```c
 void generate_image(uint_fast64_t (*rngfunction)(), char filename[]) {
@@ -76,6 +77,7 @@ void generate_image(uint_fast64_t (*rngfunction)(), char filename[]) {
 }
 ```
 
+</p>
 </details>
 
 # 8-bit PRNG
@@ -90,3 +92,11 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
+His code is a modified XORshift using shifted two 8-bit variables. Its small code base is 220 bytes smaller than `rand()`. Visualising its output showed that it will repeat itself:
+![tzarc_prng](images/tzarc_prng.bmp)
+
+
+
+
+rand() 10582 bytes free
+tzard() 10802 bytes free
