@@ -4,8 +4,9 @@ A simple suggestion on randomising RGB lights in the QMK discord led me down the
 # Evaluating PRNGs
 While pseudorandom number generators are not of cryptography quality, we do want an algorithm produces randomness that do not repeat themselves when are are used for animation and visual lighting. Rendering the PRNG output as bitmap image is a simple way to check for patterns with [this code](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries), replacing `rngfunction()` with the PRNG function:
 
-<details><summary>bitmap generator</summary>
-<p>
+<details>
+<summary>Show code</summary>
+
 ```c
 void generate_image(uint_fast64_t (*rngfunction)(), char filename[]) {
 	//width, height, and bitcount are the key factors:
@@ -74,7 +75,7 @@ void generate_image(uint_fast64_t (*rngfunction)(), char filename[]) {
 	return;
 }
 ```
-</p>
+
 </details>
 
 # 8-bit PRNG
