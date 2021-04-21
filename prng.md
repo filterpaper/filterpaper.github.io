@@ -1,5 +1,5 @@
 # Pseudorandom Number Generators
-A simple suggestion on randomising RGB lights in the [QMK discord](https://discord.gg/fBGYurv) led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of code sample showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
+A simple discussion on randomising RGB lights in the [QMK discord](https://discord.gg/fBGYurv) led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of code sample showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
 
 # Evaluating PRNGs
 ## Visually with bitmap
@@ -50,7 +50,7 @@ The absence of regularity does not imply good output but bitmap imagins is a fun
 For more serious use of PRNG output, the simple [PractRand tool](http://pracrand.sourceforge.net/) tool can be used to evaluate output quality. See this post for more details on [setting up PractRand tests](https://www.pcg-random.org/posts/how-to-test-with-practrand.html).
 
 # 32 and 64-bit PRNGs
-Large state space of 32 and 64-bit is where one can find many PRNGs. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes are larger than `rand()`. Nonetheless if you want something bespoke, listed in this section are interesting ones that passes PractRand tests.
+Large state space of 32 and 64-bit is where one can find many PRNGs. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes are larger than `rand()`. Nonetheless if you want something bespoke, listed in this section are interesting ones that passes PractRand tests. It is worth noting that truncated `uint8_t` output of these codes are on par with its full length results.
 ## PCG32
 Melissa O'Neill published her paper and PCG (permuted congruential generator) family of codes at [www.pcg-random.org](https://www.pcg-random.org/). Her most robust [PCG32 code](https://www.pcg-random.org/download.html) has many versions—the following is a seeded version of 64-bit state with XORshift and random-rotation:
 ```c
