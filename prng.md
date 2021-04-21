@@ -1,5 +1,5 @@
 # Pseudorandom Number Generators
-A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of code sample showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
+A simple suggestion on randomising RGB lights in the [QMK discord](https://discord.gg/fBGYurv) led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of code sample showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
 
 # Evaluating PRNGs
 ## Visually with bitmap
@@ -210,12 +210,14 @@ No PRNG | 10902 bytes free | NULL
 `xshift8` | 10790 bytes free | 112
 `jsf8()` | 10796 bytes free | 106
 
+# Footnote
+
+Init code for seeding states were not include in these samples—they are seeded manually because there is no random source in a [QMK keyboard](https://github.com/qmk/qmk_firmware). Suffice to say that codes here should not be applied on sensitive cryptography use cases–they are pseudorandom after all.
 
 # External links
 * [Visualizing the Heart of Some PRNGs](https://www.pcg-random.org/posts/visualizing-the-heart-of-some-prngs.html)
 * [Permuted congruential generator](https://en.wikipedia.org/wiki/Permuted_congruential_generator)
 * [Xorshift](https://en.wikipedia.org/wiki/Xorshift)
-* [Brad Forschinger 16 bit xorshift rng](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html)
 * [PractRand](http://pracrand.sourceforge.net/)
 * [How to Test with PractRand](https://www.pcg-random.org/posts/how-to-test-with-practrand.html)
 * [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html)
