@@ -1,5 +1,5 @@
 # Pseudorandom Number Generators
-A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. However generating good randomness within 8-bit space is not that easy. Documented here are interesting codes I found on the interwebs.
+A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of codes showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
 
 # Evaluating PRNGs
 ## Visually with bitmap
