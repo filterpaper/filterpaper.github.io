@@ -92,9 +92,9 @@ uint_fast64_t xoroshiro128pp(void) {
 }
 ```
 # 16-bit PRNGs
-These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be casted as `unint8_t` when needed.
+These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be type-casted to `unint8_t` as needed.
 ## PCG16
-The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests and is smaller than `rand()`. This random-rotate version use a single 32-bit state:
+The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests, failing at 2^30 bytes, and it is smaller than `rand()`. This random-rotate version use a single 32-bit state and is a good code choice for this size:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
 uint16_t pcg16(void) {
@@ -110,7 +110,7 @@ uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state version (two `uint16_t`). Though smaller than `rand()`, its output fail a large number of PractRand tests:
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state (two `uint16_t`) random-shift version. It is also smaller than `rand()`, but fails PractRand tests at 2^16 bytes:
 ```c
 uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
@@ -121,7 +121,7 @@ uint16_t rnd_xorshift_16(void) {
 }
 ```
 # 8-bit PRNGs
-This space is where limitation of its state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render repetition on bitmap and fail large number PractRand tests. Good algorithms in this section uses 32-bit states, with four `uint8_t` integers.
+This class is where limitation of state sizes is apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render bitmap repetition and fail PractRand at low output sizes. Good algorithms will typically use 32-bit states, with four `uint8_t` integers.
 ## Tzarc's XORshift
 @tzarc's [version of XORshift](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) was the start of this rabbit hole and his code follows:
 ```c
@@ -134,12 +134,12 @@ uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand tests and generates vertical patterns on its bitmap output:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails PractRand at 2^13 bytes with vertical patterns on its bitmap output:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
 ## PCG8
-An 8-bit implementation of PCG can be found in the [pcg-c-basic library](https://github.com/imneme/pcg-c-basic). Adapted to a single seeded function below is the 16-bit state with 8-bit output also using xorshift and random-rotation:
+An 8-bit implementation of PCG can be found in the [pcg-c-basic library](https://github.com/imneme/pcg-c-basic). The following is a 16-bit state version with 8-bit output also using xorshift and random-rotation:
 ```c
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
@@ -154,12 +154,12 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its bigger cousins, this fails almost all PractRand tests and shows regular patterns on its bitmap output:
+Unlike its bigger cousins, this fails PractRand with just 2^10 bytes and generates regular pattern on its bitmap output
 
 ![pcg8](images/pcg8.bmp)
 
 ## xshift8
-Edward Rosten's [rng-4294967294](https://github.com/edrosten/8bit_rng) is a simple 32-bit state (four 8-bit registers) XORshift algorithm:
+Edward Rosten's [rng-4294967294](https://github.com/edrosten/8bit_rng) is a simple 32-bit state (four 8-bit registers) XORshift algorithm, using random-shift:
 ```c
 uint8_t xshift8(void) {
 	static uint8_t x = 0, y = 0, z = 0, a = 1;
@@ -170,7 +170,7 @@ uint8_t xshift8(void) {
 	return a = z ^ ( z >> 1) ^ t ^ (t << 3);
 }
 ```
-This simple 4-state shift code passes a large number of PracRand cases and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
+This simple algorithm is surprisingly robust, failing PracRand only at large 2^29 bytes output and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
 
 ![xshift8](images/xshift8.bmp)
 
@@ -189,7 +189,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 passes a lot of PractRand tests and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded code:
+And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 also fails PractRand at 2^29 bytes output and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded firmware:
 
 ![jsf8](images/jsf8.bmp)
 
