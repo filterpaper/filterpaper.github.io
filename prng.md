@@ -3,7 +3,7 @@ A simple discussion on randomising RGB lights in the [QMK discord](https://disco
 
 # Evaluating PRNGs
 ## Visually with bitmap
-While pseudorandom number generators are not of cryptography quality, we do want an algorithm that do not repeat themselves for animation and visual lighting use-cases. Rendering PRNG output as bitmap is a simple way to review for regular patterns and this [simple bitmap code](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries) does that trick. Colours in the code loop array can be assigned `uint8_t` output from a PRNG (`prng_function()`):
+While pseudorandom number generators are not of cryptography quality, we do want an algorithm that do not repeat themselves for animation and visual lighting use-cases. Rendering PRNG output as bitmap is a simple way to review for regular patterns and this [simple bitmap code](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries) does that trick. Colours in the code loop array can be assigned the same uniform `uint8_t` output from a PRNG (`prng_function()`) to render a greyscale image:
 
 ```c
 for(int row = height - 1; row >= 0; row--) {
@@ -18,71 +18,45 @@ for(int row = height - 1; row >= 0; row--) {
 	}
 }
 ```
-However RGB values are between 0-255 so bitmap visualisation not useful for evaluating truncated output larger than `uint8_t`:
-```c
-#include <stdio.h>
-#include <stdint.h>
-
-static uint64_t state = 0x1234567890abcdef;
-
-static uint64_t return64(void) { return state; }
-static uint32_t return32(void) { return state; }
-static uint16_t return16(void) { return state; }
-static uint8_t  return8(void)  { return state; }
-
-int main (void) {
-	printf("uint64_t: 0x%16lx\n", return64());
-	printf("uint32_t: 0x%16lx\n", return32());
-	printf("uint16_t: 0x%16lx\n", return16());
-	printf("uint8_t:  0x%16lx\n", return8());
-	return 0;
-}
-```
-```
-uint64_t: 0x1234567890abcdef
-uint32_t: 0x        90abcdef
-uint16_t: 0x            cdef
-uint8_t:  0x              ef
-```
-The absence of regularity does not imply good output but bitmap imagins is a fun and quick way to detect poor output.
+The absence of pattern does not imply good output but bitmap image is a fun and quick way to detect poor one.
 
 ## Empirically with PractRand
 For more serious use of PRNG output, the simple [PractRand tool](http://pracrand.sourceforge.net/) tool can be used to evaluate output quality. Ideal PRNGs should only start failing at very large output test sizes. See this post for more details on [setting up PractRand tests](https://www.pcg-random.org/posts/how-to-test-with-practrand.html).
 
 # 32 and 64-bit PRNGs
-Large state space of 32 and 64-bit is where one can find many PRNGs. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes are larger than `rand()`. Nonetheless if you want something bespoke, listed in this section are interesting ones that passes PractRand tests. It is worth noting that truncated `uint8_t` output of these codes are on par with its full length results.
+Large state space of 32 and 64-bit is where one can find many PRNGs. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes are larger than `rand()`. Nonetheless if you want something bespoke, listed in this section are interesting ones that passes PractRand tests. It is worth noting that truncated `uint8_t` output of these codes are on par with its full length results. Hence they can also be visually rendered with unsigned RGB grey values.
 ## PCG32
 Melissa O'Neill published her paper and PCG (permuted congruential generator) family of codes at [www.pcg-random.org](https://www.pcg-random.org/). Her most robust [PCG32 code](https://www.pcg-random.org/download.html) has many versions—the following is a seeded version of 64-bit state with XORshift and random-rotation:
 ```c
 // pcg_mcg_64_xsh_rr_32_random_r
-uint_fast32_t pcg32(void) {
+uint32_t pcg32(void) {
 	// Seed this 64bit manually
-	static uint_fast64_t state = 0x406832dd910219e5;
+	static uint64_t state = 0x406832dd910219e5;
 
-	uint_fast64_t oldstate = state;
+	uint64_t oldstate = state;
 	state = state * 6364136223846793005ULL;
 
-	uint_fast32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
-	uint_fast32_t rot = oldstate >> 59U;
+	uint32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
+	uint32_t rot = oldstate >> 59U;
 	return (value >> rot) | (value << ((- rot) & 31));
 }
 ```
 ## Xoroshiro++
 Shift-register generator using [XORshift](https://en.wikipedia.org/wiki/Xorshift) was first discovered by mathematician George Marsaglia. Weaknesses of earlier implementations were improved with XORshift and rotate, [dubbed xoshiro / xoroshiro](https://prng.di.unimi.it/). The following is the general purpose and fast `xoroshiro128++` using 128-bit state (with two `uint64_t`):
 ```c
-static uint_fast64_t rol64(uint_fast64_t const x, int const k) {
+uint64_t rol64(uint_fast64_t const x, int const k) {
 	return (x << k) | (x >> (64 - k));
 }
 
 // xoroshiro128++
-uint_fast64_t xoroshiro128pp(void) {
+uint64_t xoroshiro128pp(void) {
 	// Seed both 64bit manually
-	static uint_fast64_t s0 = 0xaafdbd4fce743b4d;
-	static uint_fast64_t s1 = 0xcaee5c952c4ae6a8;
+	static uint64_t s0 = 0xaafdbd4fce743b4d;
+	static uint64_t s1 = 0xcaee5c952c4ae6a8;
 
-	uint_fast64_t const t0 = s0;
-	uint_fast64_t t1 = s1;
-	uint_fast64_t const result = rol64(t0 + t1, 17) + t0;
+	uint64_t const t0 = s0;
+	uint64_t t1 = s1;
+	uint64_t const result = rol64(t0 + t1, 17) + t0;
 
 	t1 ^= t0;
 	s0 = rol64(t0, 49) ^ t1 ^ (t1 << 21); // a, b
@@ -115,7 +89,7 @@ uint16_t pcg16(void) {
 uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
 	static uint16_t x = 1, y = 1;
-	uint_fast16_t t = (x ^ (x << 5U));
+	uint16_t t = (x ^ (x << 5U));
 	x = y * 3;
 	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
 }
