@@ -92,9 +92,9 @@ static uint_fast64_t xoroshiro128pp(void) {
 }
 ```
 # 16-bit PRNGs
-16-bit is exponentially smaller and is more practical for embedded firmware. They strike a good balance of output quality versus space and its output can be casted as `unint8_t` when needed.
+These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be casted as `unint8_t` when needed.
 ## PCG16
-The 16-bit version of Melissa PCG code is robust enough to pass most of PractRand's test and is smaller than `rand()`. This random-rotate version uses single 32-bit state with 16-bit output:
+The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests and is smaller than `rand()`. This random-rotate version use a single 32-bit state:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
 static uint16_t pcg16(void) {
@@ -110,7 +110,7 @@ static uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state version (two `uint16_t`). Though smaller than `rand()`, its output fail a large number of PractRand's test:
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state version (two `uint16_t`). Though smaller than `rand()`, its output fail a large number of PractRand tests:
 ```c
 static uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
@@ -134,12 +134,12 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand's test and one can observe vertical patterns on the bitmap output:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand test and one can observe vertical patterns on the bitmap output:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
 ## PCG8
-An 8-bit implementation of PCG can be found in the [pcg-c-basic library](https://github.com/imneme/pcg-c-basic). They are technically using 16-bit registers with 8-bit output. Adapted to a single seeded function below is the 16-bit MCG with 8-bit output using xorshift and random-rotation:
+An 8-bit implementation of PCG can be found in the [pcg-c-basic library](https://github.com/imneme/pcg-c-basic). Adapted to a single seeded function below is the 16-bit state with 8-bit output also using xorshift and random-rotation:
 ```c
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
@@ -154,27 +154,26 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its larger cousins, the 8-bit PCG version fails PractRand and shows regular patterns on its bitmap output:
+Unlike its bigger cousins, this fails most PractRand tests and shows regular patterns on its bitmap output:
 
 ![pcg8](images/pcg8.bmp)
 
 ## JSF8
 Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version with 32-bit state:
 ```c
+#define rot8(x,k) ((x << k)|(x >> (8 - k)))
 uint8_t jsf8(void) {
-	// Seed these 8bit manually
 	static uint8_t a = 0xf1;
 	static uint8_t b = 0xee, c = 0xee, d = 0xee;
 
-	uint8_t e = a - ((b << 1)|(b >> 7));
-	a = b ^ ((c << 4)|(c >> 4));
+	uint8_t e = a - rot8(b, 1);
+	a = b ^ rot8(c, 4);
 	b = c + d;
 	c = d + e;
-	d = e + a;
-	return d;
+	return d = e + a;
 }
 ```
-And behold, this diminutive algorithm passed most of PractRand's tests and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded code:
+And behold, this diminutive algorithm is both small and fast, without multiplication. JSF8 also passes a lot of PractRand tests and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded code:
 
 ![jsf8](images/jsf8.bmp)
 
@@ -204,4 +203,3 @@ No PRNG | 10902 bytes free | NULL
 * [How to Test with PractRand](https://www.pcg-random.org/posts/how-to-test-with-practrand.html)
 * [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html)
 * [How to Test with TestU01](https://www.pcg-random.org/posts/how-to-test-with-testu01.html)
-j
