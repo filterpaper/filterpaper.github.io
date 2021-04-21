@@ -55,7 +55,7 @@ Large state space of 32 and 64-bit is where one can find many PRNGs. They are ov
 Melissa O'Neill published her paper and PCG (permuted congruential generator) family of codes at [www.pcg-random.org](https://www.pcg-random.org/). Her most robust [PCG32 code](https://www.pcg-random.org/download.html) has many versions—the following is a seeded version of 64-bit state with XORshift and random-rotation:
 ```c
 // pcg_mcg_64_xsh_rr_32_random_r
-static uint_fast32_t pcg32(void) {
+uint_fast32_t pcg32(void) {
 	// Seed this 64bit manually
 	static uint_fast64_t state = 0x406832dd910219e5;
 
@@ -75,7 +75,7 @@ static uint_fast64_t rol64(uint_fast64_t const x, int const k) {
 }
 
 // xoroshiro128++
-static uint_fast64_t xoroshiro128pp(void) {
+uint_fast64_t xoroshiro128pp(void) {
 	// Seed both 64bit manually
 	static uint_fast64_t s0 = 0xaafdbd4fce743b4d;
 	static uint_fast64_t s1 = 0xcaee5c952c4ae6a8;
@@ -97,7 +97,7 @@ These are exponentially smaller and is more practical for embedded firmware. Sma
 The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests and is smaller than `rand()`. This random-rotate version use a single 32-bit state:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
-static uint16_t pcg16(void) {
+uint16_t pcg16(void) {
 	// Seed this 32bit manually
 	static uint32_t state = 0x406832dd;
 
@@ -112,7 +112,7 @@ static uint16_t pcg16(void) {
 ## xorshift16
 [Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state version (two `uint16_t`). Though smaller than `rand()`, its output fail a large number of PractRand tests:
 ```c
-static uint16_t rnd_xorshift_16(void) {
+uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
 	static uint16_t x = 1, y = 1;
 	uint_fast16_t t = (x ^ (x << 5U));
@@ -125,7 +125,7 @@ This space is where limitation of its state sizes become apparent. Poorly implem
 ## Tzarc's XORshift
 @tzarc's [version of XORshift](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) was the start of this rabbit hole and his code follows:
 ```c
-static uint8_t prng(void) {
+uint8_t prng(void) {
 	// Seed this 8bit manually
 	static uint8_t s = 0xAA, a = 0;
 	s ^= s << 3;
@@ -161,7 +161,7 @@ Unlike its bigger cousins, this fails almost all PractRand tests and shows regul
 ## xshift8
 Edward Rosten's [rng-4294967294](https://github.com/edrosten/8bit_rng) is a simple 32-bit state (four 8-bit registers) XORshift algorithm:
 ```c
-static uint8_t xshift8(void) {
+uint8_t xshift8(void) {
 	static uint8_t x = 0, y = 0, z = 0, a = 1;
 	uint8_t t = x ^ (x << 5);
 	x = y;
@@ -195,7 +195,7 @@ And behold, this diminutive algorithm is both small and fast without multiplicat
 
 
 # QMK compile sizes
-Here is a comparison of QMK firmware sizes for each PRNG compiled with `LTO_ENABLE = yes`:
+Here is a comparison of [QMK firmware](https://github.com/qmk/qmk_firmware) sizes for each PRNG compiled with `LTO_ENABLE = yes`:
 
 PRNG | Compiled results | Byte size
 :-------------: | :-------------: | ------------- |
@@ -212,7 +212,7 @@ No PRNG | 10902 bytes free | NULL
 
 # Footnote
 
-Init code for seeding states were not include in these samples—they are seeded manually because there is no random source in a [QMK keyboard](https://github.com/qmk/qmk_firmware). Suffice to say that codes here should not be applied on sensitive cryptography use cases–they are pseudorandom after all.
+Init code for seeding states were not include in these samples—they are seeded manually because there is no random source in a QMK keyboard. Suffice to say that codes here should not be applied on sensitive cryptography use cases–they are pseudorandom after all.
 
 # External links
 * [Visualizing the Heart of Some PRNGs](https://www.pcg-random.org/posts/visualizing-the-heart-of-some-prngs.html)
