@@ -181,10 +181,12 @@ And behold, this diminutive algorithm passed most of PractRand's tests and its b
 
 # QMK compile sizes
 Here is a comparison of QMK firmware sizes for each PRNG compiled with `LTO_ENABLE = yes`:
+
 PRNG | Compiled results | Byte size
+
 ---- | ---------------- | ---------
 No PRNG | 10902 bytes free |
-rand()` | 10582 bytes free | 320
+`rand()` | 10582 bytes free | 320
 `pcg32()` | 10278 bytes free | 624
 `xoroshiro128pp()` | 10110 bytes free | 792
 `pcg16()` | 10622 bytes free | 280
