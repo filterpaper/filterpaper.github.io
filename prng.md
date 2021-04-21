@@ -121,7 +121,7 @@ static uint16_t rnd_xorshift_16(void) {
 }
 ```
 # 8-bit PRNGs
-8-bit space is where limitation of its state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render repetition on bitmap. Almost all of them fail most PractRand tests.
+This space is where limitation of its state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render repetition on bitmap and fail large number PractRand tests. Good algorithms in this section uses 32-bit states, with four `uint8_t` integers.
 ## Tzarc's XORshift
 @tzarc's [version of XORshift](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) was the start of this rabbit hole and his code follows:
 ```c
@@ -134,7 +134,7 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand test and one can observe vertical patterns on the bitmap output:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand test and generates vertical patterns on its bitmap output:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
@@ -154,12 +154,26 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its bigger cousins, this fails most PractRand tests and shows regular patterns on its bitmap output:
+Unlike its bigger cousins, this fails almost all PractRand tests and shows regular patterns on its bitmap output:
 
 ![pcg8](images/pcg8.bmp)
 
+## xshift8
+Edward Rosten's [rng-4294967294](https://github.com/edrosten/8bit_rng) is a simple 32-bit state (four 8-bit registers) XORshift algorithm:
+```c
+static uint8_t xshift8(void) {
+	static uint8_t x = 0, y = 0, z = 0, a = 1;
+	uint8_t t = x ^ (x << 5);
+	x = y; y = z; z = a;
+	return a = z ^ ( z >> 1) ^ t ^ (t << 3);
+}
+```
+This simple 4-state shift code passes a large number of PracRand cases and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
+
+![xshift8](images/xshift8.bmp)
+
 ## JSF8
-Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version with 32-bit state:
+Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version that uses random-rotation with 32-bit state:
 ```c
 #define rot8(x,k) ((x << k)|(x >> (8 - k)))
 uint8_t jsf8(void) {
@@ -173,7 +187,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-And behold, this diminutive algorithm is both small and fast, without multiplication. JSF8 also passes a lot of PractRand tests and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded code:
+And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 passes a lot of PractRand tests and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded code:
 
 ![jsf8](images/jsf8.bmp)
 
@@ -191,6 +205,7 @@ No PRNG | 10902 bytes free | NULL
 `rnd_xorshift_16()` | 10786 bytes free | 116
 `prng()` | 10802 bytes free | 100
 `pcg8()` | 10738 bytes free | 164
+`xshift8` | 10790 bytes free | 112
 `jsf8()` | 10796 bytes free | 106
 
 
