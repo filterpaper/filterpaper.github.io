@@ -1,5 +1,5 @@
 # Pseudorandom Number Generators
-A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of codes showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
+A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. Experiments on a number of code sample showed that creating good RNG in 8-bit is not trivial. Documented here are noteworthy algorithms found on the Interweb.
 
 # Evaluating PRNGs
 ## Visually with bitmap
@@ -134,7 +134,7 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand test and generates vertical patterns on its bitmap output:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand tests and generates vertical patterns on its bitmap output:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
