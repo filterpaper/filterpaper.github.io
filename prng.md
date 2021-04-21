@@ -164,7 +164,9 @@ Edward Rosten's [rng-4294967294](https://github.com/edrosten/8bit_rng) is a simp
 static uint8_t xshift8(void) {
 	static uint8_t x = 0, y = 0, z = 0, a = 1;
 	uint8_t t = x ^ (x << 5);
-	x = y; y = z; z = a;
+	x = y;
+	y = z;
+	z = a;
 	return a = z ^ ( z >> 1) ^ t ^ (t << 3);
 }
 ```
