@@ -47,7 +47,7 @@ uint8_t:  0x              ef
 The absence of regularity does not imply good output but bitmap imagins is a fun and quick way to detect poor output.
 
 ## Empirically with PractRand
-For more serious use of PRNG output, the simple [PractRand tool](http://pracrand.sourceforge.net/) tool can be used to evaluate output quality. See this post for more details on [setting up PractRand tests](https://www.pcg-random.org/posts/how-to-test-with-practrand.html).
+For more serious use of PRNG output, the simple [PractRand tool](http://pracrand.sourceforge.net/) tool can be used to evaluate output quality. Ideal PRNGs should only start failing at very large output test sizes. See this post for more details on [setting up PractRand tests](https://www.pcg-random.org/posts/how-to-test-with-practrand.html).
 
 # 32 and 64-bit PRNGs
 Large state space of 32 and 64-bit is where one can find many PRNGs. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes are larger than `rand()`. Nonetheless if you want something bespoke, listed in this section are interesting ones that passes PractRand tests. It is worth noting that truncated `uint8_t` output of these codes are on par with its full length results.
@@ -134,7 +134,7 @@ uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest. However the output fails PractRand at 2^13 bytes with vertical patterns on its bitmap output:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails PractRand at 2^13 bytes and it has vertical lines on its bitmap image:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
@@ -154,7 +154,7 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its bigger cousins, this fails PractRand with just 2^10 bytes and generates regular pattern on its bitmap output
+Unlike its bigger cousins, this fails PractRand with just 2^10 bytes and its image output has visual waves:
 
 ![pcg8](images/pcg8.bmp)
 
@@ -189,7 +189,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 also fails PractRand at 2^29 bytes output and its bitmap is irregular—making it the perfect 8-bit PRNG for embedded firmware:
+And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 also fails PractRand at large 2^29 bytes output and generates a noisy image—making it the perfect 8-bit PRNG for embedded firmware:
 
 ![jsf8](images/jsf8.bmp)
 
