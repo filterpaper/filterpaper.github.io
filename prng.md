@@ -94,7 +94,7 @@ static uint_fast64_t xoroshiro128pp(void) {
 # 16-bit PRNGs
 16-bit is exponentially smaller and is more practical for embedded firmware. They strike a good balance of output quality versus space and its output can be casted as `unint8_t` when needed.
 ## PCG16
-The 16-bit version of Melissa PCG code is robust enough to pass most of PractRand's test and is smaller than `rand()`. This is uses single 32-bit state version with 16-bit output:
+The 16-bit version of Melissa PCG code is robust enough to pass most of PractRand's test and is smaller than `rand()`. This random-rotate version uses single 32-bit state with 16-bit output:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
 static uint16_t pcg16(void) {
@@ -110,18 +110,18 @@ static uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following two 16-bit state version. It is also smaller than `rand()`, but its output fail a large number of PractRand's test:
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state version (two `uint16_t`). Though smaller than `rand()`, its output fail a large number of PractRand's test:
 ```c
-static uint_fast16_t rnd_xorshift_16(void) {
+static uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
-	static uint_fast16_t x = 1, y = 1;
+	static uint16_t x = 1, y = 1;
 	uint_fast16_t t = (x ^ (x << 5U));
 	x = y * 3;
 	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
 }
 ```
 # 8-bit PRNGs
-8-bit space is where limitation of its state sizes become apparently. Poorly implemented linear-feedback shift register (LFSR) codes will render repetition on bitmap. Almost all of them will fail most PractRand tests.
+8-bit space is where limitation of its state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render repetition on bitmap. Almost all of them fail most PractRand tests.
 ## Tzarc's XORshift
 @tzarc's [version of XORshift](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) was the start of this rabbit hole and his code follows:
 ```c
@@ -134,7 +134,7 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest code base. However output fails all PractRand's test and one can observe vertical patterns on the bitmap outpu:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails all PractRand's test and one can observe vertical patterns on the bitmap output:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
@@ -154,12 +154,12 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its larger cousins, the 8-bit PCG version fails PractRand and exhibited strong patterns on its bitmap output:
+Unlike its larger cousins, the 8-bit PCG version fails PractRand and shows regular patterns on its bitmap output:
 
 ![pcg8](images/pcg8.bmp)
 
 ## JSF8
-Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html) into 16 and this fast 8-bit output with 32-bit state:
+Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version with 32-bit state:
 ```c
 uint8_t jsf8(void) {
 	// Seed these 8bit manually
