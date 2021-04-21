@@ -1,9 +1,9 @@
 # Pseudorandom Number Generators
-A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. However generating good randomness within 8-bit space is not that easy. Compiled here are interesting codes found on the interwebs.
+A simple suggestion on randomising RGB lights in the QMK discord led me down the rabbit hole of pseudorandom number generators. The original goal was replacing C library's `rand()` function with a smaller function to generate random unsigned 8-bit numbers for RGB. However generating good randomness within 8-bit space is not that easy. Documented here are interesting codes I found on the interwebs.
 
 # Evaluating PRNGs
 ## Visually with bitmap
-While pseudorandom number generators are not of cryptography quality, we do want an algorithm that do not repeat themselves when used for animation and visual lighting. Rendering PRNG output as bitmap is a simple way to review for patterns and this [simple bitmap code](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries) does that trick. RGB values in the looped array can be populated with unsigned int8 output from the PRNG (`prng_function()`):
+While pseudorandom number generators are not of cryptography quality, we do want an algorithm that do not repeat themselves for animation and visual lighting use-cases. Rendering PRNG output as bitmap is a simple way to review for regular patterns and this [simple bitmap code](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries) does that trick. Colours in the code loop array can be assigned `uint8_t` output from a PRNG (`prng_function()`):
 
 ```c
 for(int row = height - 1; row >= 0; row--) {
@@ -18,7 +18,7 @@ for(int row = height - 1; row >= 0; row--) {
 	}
 }
 ```
-Image RGB values are 0-255 so this not very useful for evaluating output larger than `uint8_t` because they will be truncated:
+However RGB values are between 0-255 so bitmap visualisation not useful for evaluating truncated output larger than `uint8_t`:
 ```c
 #include <stdio.h>
 #include <stdint.h>
@@ -44,13 +44,13 @@ uint32_t: 0x        90abcdef
 uint16_t: 0x            cdef
 uint8_t:  0x              ef
 ```
-Nonetheless, bitmap visual is still a fun and quick way to detect poor output.
+The absence of regularity does not imply good output but bitmap imagins is a fun and quick way to detect poor output.
 
 ## Empirically with PractRand
 For more serious use of PRNG output, the simple [PractRand tool](http://pracrand.sourceforge.net/) tool can be used to evaluate output quality. See this post for more details on [setting up PractRand tests](https://www.pcg-random.org/posts/how-to-test-with-practrand.html).
 
 # 32 and 64-bit PRNGs
-32 and 64-bit realm is where one can find many PRNGs—large variables has sufficient space for mathematical operations. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes will be larger than `rand()`. Nonetheless, listed in this section are interesting ones that passes PractRand tests.
+Large state space of 32 and 64-bit is where one can find many PRNGs. They are overkill for embedded systems like QMK that rarely need big random numbers and compiled code sizes are larger than `rand()`. Nonetheless if you want something bespoke, listed in this section are interesting ones that passes PractRand tests.
 ## PCG32
 Melissa O'Neill published her paper and PCG (permuted congruential generator) family of codes at [www.pcg-random.org](https://www.pcg-random.org/). Her most robust [PCG32 code](https://www.pcg-random.org/download.html) has many versions—the following is a seeded version of 64-bit state with XORshift and random-rotation:
 ```c
@@ -68,7 +68,7 @@ static uint_fast32_t pcg32(void) {
 }
 ```
 ## Xoroshiro++
-Shift-register generator using [XORshift](https://en.wikipedia.org/wiki/Xorshift) was discovered by mathematician George Marsaglia. Weaknesses with earlier implementations were improved with XORshift and rotate versions–[dubbed xoshiro / xoroshiro](https://prng.di.unimi.it/). The following is the general purpose and fast `xoroshiro128++` using 128-bit state (with two `uint64_t`):
+Shift-register generator using [XORshift](https://en.wikipedia.org/wiki/Xorshift) was first discovered by mathematician George Marsaglia. Weaknesses of earlier implementations were improved with XORshift and rotate, [dubbed xoshiro / xoroshiro](https://prng.di.unimi.it/). The following is the general purpose and fast `xoroshiro128++` using 128-bit state (with two `uint64_t`):
 ```c
 static uint_fast64_t rol64(uint_fast64_t const x, int const k) {
 	return (x << k) | (x >> (64 - k));
@@ -92,9 +92,9 @@ static uint_fast64_t xoroshiro128pp(void) {
 }
 ```
 # 16-bit PRNGs
-16-bit is exponentially smaller and more manageable for embedded firmware–its output can be casted as `unint8_t` as needed.
+16-bit is exponentially smaller and is more practical for embedded firmware. They strike a good balance of output quality versus space and its output can be casted as `unint8_t` when needed.
 ## PCG16
-The 16-bit version of PCG code is robust for mo† of PractRand's test and is x larger than `rand()`:
+The 16-bit version of Melissa PCG code is robust enough to pass most of PractRand's test and is smaller than `rand()`. This is uses single 32-bit state version with 16-bit output:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
 static uint16_t pcg16(void) {
@@ -110,7 +110,7 @@ static uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift to the following 2-register code function. Smaller than `rand()`.
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following two 16-bit state version. It is also smaller than `rand()`, but its output fail a large number of PractRand's test:
 ```c
 static uint_fast16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
@@ -121,7 +121,7 @@ static uint_fast16_t rnd_xorshift_16(void) {
 }
 ```
 # 8-bit PRNGs
-8-bit space is where limitation of its size become apparently. Poorly implemented linear-feedback shift register (LFSR) codes will show render repeated patterns on bitmap. Almost all of them will fail most PractRand tests.
+8-bit space is where limitation of its state sizes become apparently. Poorly implemented linear-feedback shift register (LFSR) codes will render repetition on bitmap. Almost all of them will fail most PractRand tests.
 ## Tzarc's XORshift
 @tzarc's [version of XORshift](https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63) was the start of this rabbit hole and his code follows:
 ```c
@@ -134,7 +134,7 @@ static uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit variables and its small code base is 220 bytes smaller than `rand()`. The output fails all PractRand's test and there are visual patterns to its bitmap output:
+It is a modified XORshift using two 8-bit state and is the smallest code base. However output fails all PractRand's test and one can observe vertical patterns on the bitmap outpu:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
@@ -154,11 +154,12 @@ uint8_t pcg8(void) {
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its larger cousins, the 8-bit version doesn't work as well—strong visual pattern suggest that the output repeat itself with small samples.
+Unlike its larger cousins, the 8-bit PCG version fails PractRand and exhibited strong patterns on its bitmap output:
+
 ![pcg8](images/pcg8.bmp)
 
 ## JSF8
-Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/smallprng.html), with a detailed [description by the author](http://burtleburtle.net/bob/rand/talksmall.html). His code is dubbed Jenkins Fast Small or JSF, and [was adapted](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html) into 16 and this 8-bit version:
+Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html) into 16 and this fast 8-bit output with 32-bit state:
 ```c
 uint8_t jsf8(void) {
 	// Seed these 8bit manually
@@ -173,19 +174,25 @@ uint8_t jsf8(void) {
 	return d;
 }
 ```
-And behold, this tiny 8-bit algorithm passes the visual bitmap test, PractRand and is smaller than `rand()`, making it the perfect PRNG for embedded code!
+And behold, this diminutive algorithm passed most of PractRand's tests and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded code:
+
 ![jsf8](images/jsf8.bmp)
 
+
 # QMK compile sizes
-* No PRNGs 10902 bytes free
-* `rand()` 10582 bytes free
-* `pcg32()` 10278 bytes free
-* `xoroshiro128pp()` 10110 bytes free
-* `pcg16()` 10622 bytes free
-* `rnd_xorshift_16()` 10786 bytes free
-* `prng()` 10802 bytes free
-* `pcg8()` 10738 bytes free
-* `jsf8()` 10796 bytes free
+Here is a comparison of QMK firmware sizes for each PRNG compiled with `LTO_ENABLE = yes`:
+PRNG | Compiled results | Byte size
+---- | ---------------- | ---------
+No PRNG | 10902 bytes free |
+rand()` | 10582 bytes free | 320
+`pcg32()` | 10278 bytes free | 624
+`xoroshiro128pp()` | 10110 bytes free | 792
+`pcg16()` | 10622 bytes free | 280
+`rnd_xorshift_16()` | 10786 bytes free | 116
+`prng()` | 10802 bytes free | 100
+`pcg8()` | 10738 bytes free | 164
+`jsf8()` | 10796 bytes free | 106
+
 
 # External links
 * [Visualizing the Heart of Some PRNGs](https://www.pcg-random.org/posts/visualizing-the-heart-of-some-prngs.html)
@@ -196,7 +203,4 @@ And behold, this tiny 8-bit algorithm passes the visual bitmap test, PractRand a
 * [How to Test with PractRand](https://www.pcg-random.org/posts/how-to-test-with-practrand.html)
 * [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html)
 * [How to Test with TestU01](https://www.pcg-random.org/posts/how-to-test-with-testu01.html)
-
-
-rand() 10582 bytes free
-tzard() 10802 bytes free
+j
