@@ -175,7 +175,7 @@ This simple algorithm is surprisingly robust, failing PracRand only at large 2^2
 ![xshift8](images/xshift8.bmp)
 
 ## JSF8
-Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version that uses random-rotation with 32-bit state:
+Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version that uses random-rotation with 32-bit internal state:
 ```c
 #define rot8(x,k) ((x << k)|(x >> (8 - k)))
 uint8_t jsf8(void) {
@@ -189,7 +189,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 also fails PractRand at 2^29 bytes output and its bitmap output is irregular—making it the perfect 8-bit PRNG for embedded firmware:
+And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 also fails PractRand at 2^29 bytes output and its bitmap is irregular—making it the perfect 8-bit PRNG for embedded firmware:
 
 ![jsf8](images/jsf8.bmp)
 
