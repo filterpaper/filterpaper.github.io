@@ -68,7 +68,7 @@ uint64_t xoroshiro128pp(void) {
 # 16-bit PRNGs
 These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be type-casted to `unint8_t` as needed. These will also fail PractRand tests on smaller output.
 ## PCG16
-The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests, failing at 2^30 bytes. This random-rotate version use a single 32-bit state and is a good code choice for this size:
+The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests, failing at 2^30 bytes (1 gigabyte). This random-rotate version use a single 32-bit state and is a good code choice for this size:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
 uint16_t pcg16(void) {
@@ -84,7 +84,7 @@ uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following simple 32-bit state (two `uint16_t`) random-shift version. It fails PractRand tests with just 2^16 bytes:
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following simple 32-bit state (two `uint16_t`) random-shift version. It fails PractRand tests with just 2^16 bytes (64 kilobytes):
 ```c
 uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
@@ -109,7 +109,7 @@ uint16_t jsf16(void) {
 	return d = e + a;
 }
 ```
-Unlike its peers, this algorithm will only fail PractRand at a huge 2^47 bytes (128 TB) output; making it a very good PRNG for large 16-bit samples.
+Unlike its peers, this algorithm will only fail PractRand at a huge 2^47 bytes (128 terabytes!) output; making it a very good PRNG for large 16-bit samples.
 # 8-bit PRNGs
 This space is where limitation of state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render bitmap repetition and fail PractRand at low output sizes.
 ## Tzarc's XORshift
@@ -124,7 +124,7 @@ uint8_t prng(void) {
 	return s;
 }
 ```
-It is a modified XORshift using two 8-bit state and is the smallest. However the output fails PractRand at 2^13 bytes and produces vertical bitmap image lines:
+It is a modified XORshift using two 8-bit state and is the smallest. However the output fails PractRand at 2^13 bytes (8 kilobytes) and produces vertical bitmap image lines:
 
 ![tzarc_prng](images/tzarc_prng.bmp)
 
@@ -160,7 +160,7 @@ uint8_t xshift8(void) {
 	return a = z ^ ( z >> 1) ^ t ^ (t << 3);
 }
 ```
-His simple algorithm is surprisingly robust, failing PracRand at large 2^16 bytes output and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
+His simple algorithm is surprisingly robust, failing PracRand at large 2^16 bytes (64 kilobytes) output and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
 
 ![xshift8](images/xshift8.bmp)
 
@@ -179,7 +179,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-This diminutive algorithm is both small and fast; failing PractRand at a large 2^29 bytes output. Its bitmap output is also pattern free—making it the best 8-bit PRNG for embedded firmware:
+This diminutive algorithm is both small and fast; failing PractRand at a large 2^29 bytes (512 megabytes) output. Its bitmap output is also pattern free—making it the best 8-bit PRNG for embedded firmware:
 
 ![jsf8](images/jsf8.bmp)
 
