@@ -203,7 +203,7 @@ No PRNG | 10902 bytes free | NULL
 
 # Footnote
 
-Init code for seeding states were not include in these samples—they are seeded manually because there is no random source in a QMK keyboard. Suffice to say that codes here should not be applied on sensitive cryptography use cases–they are pseudorandom after all.
+Init code for seeding states were not include in these samples—they are seeded manually because there is no random source in a QMK keyboard. Suffice to say that codes here should not be applied on sensitive cryptography use cases–they are 'pseudorandom' after all.
 
 # External links
 * [Visualizing the Heart of Some PRNGs](https://www.pcg-random.org/posts/visualizing-the-heart-of-some-prngs.html)
