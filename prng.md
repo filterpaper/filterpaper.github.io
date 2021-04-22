@@ -109,7 +109,7 @@ uint16_t jsf16(void) {
 	return d = e + a;
 }
 ```
-Unlike its peers, this algorithm output will only fail PractRand at a huge 2^47 bytes (128 TB) output; making it a very good PRNG for large 16-bit samples.
+Unlike its peers, this algorithm will only fail PractRand at a huge 2^47 bytes (128 TB) output; making it a very good PRNG for large 16-bit samples.
 # 8-bit PRNGs
 This space is where limitation of state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render bitmap repetition and fail PractRand at low output sizes.
 ## Tzarc's XORshift
