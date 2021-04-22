@@ -179,7 +179,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-This diminutive algorithm is both small and fast failing PractRand at a large 2^29 bytes output. Its bitmap output is also pattern free—making it the best 8-bit PRNG for embedded firmware:
+This diminutive algorithm is both small and fast; failing PractRand at a large 2^29 bytes output. Its bitmap output is also pattern free—making it the best 8-bit PRNG for embedded firmware:
 
 ![jsf8](images/jsf8.bmp)
 
