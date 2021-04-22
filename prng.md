@@ -68,7 +68,7 @@ uint64_t xoroshiro128pp(void) {
 # 16-bit PRNGs
 These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be type-casted to `unint8_t` as needed. These will also fail PractRand tests on smaller output.
 ## PCG16
-The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests, failing at 2^30 bytes, and it is smaller than `rand()`. This random-rotate version use a single 32-bit state and is a good code choice for this size:
+The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests, failing at 2^30 bytes. This random-rotate version use a single 32-bit state and is a good code choice for this size:
 ```c
 // pcg_mcg_32_xsh_rr_16_random_r
 uint16_t pcg16(void) {
@@ -84,7 +84,7 @@ uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following simple 32-bit state (two `uint16_t`) random-shift version. Though smaller than `rand()`, it fails PractRand tests with just 2^16 bytes:
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following simple 32-bit state (two `uint16_t`) random-shift version. It fails PractRand tests with just 2^16 bytes:
 ```c
 uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
@@ -109,7 +109,7 @@ uint16_t jsf16(void) {
 	return d = e + a;
 }
 ```
-Unlike its other peers, his algorithm output will only fail PractRand at a huge 2^47 bytes (128 TB) output; making it a very good PRNG for large 16-bit samples.
+Unlike its peers, this algorithm output will only fail PractRand at a huge 2^47 bytes (128 TB) output; making it a very good PRNG for large 16-bit samples.
 # 8-bit PRNGs
 This space is where limitation of state sizes become apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render bitmap repetition and fail PractRand at low output sizes.
 ## Tzarc's XORshift
@@ -195,6 +195,7 @@ No PRNG | 10902 bytes free | NULL
 `xoroshiro128pp()` | 10110 bytes free | 792
 `pcg16()` | 10622 bytes free | 280
 `rnd_xorshift_16()` | 10786 bytes free | 116
+`jsf16()` | 10736 bytes free | 166
 `prng()` | 10802 bytes free | 100
 `pcg8()` | 10738 bytes free | 164
 `xshift8` | 10790 bytes free | 112
