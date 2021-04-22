@@ -66,7 +66,7 @@ uint64_t xoroshiro128pp(void) {
 }
 ```
 # 16-bit PRNGs
-These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be type-casted to `unint8_t` as needed.
+These are exponentially smaller and is more practical for embedded firmware. Small state sizes strike a good balance of output quality versus code size and its output can be type-casted to `unint8_t` as needed. These will also fail PractRand tests on smaller output.
 ## PCG16
 The 16-bit output version of Melissa PCG code is robust enough to pass most of PractRand tests, failing at 2^30 bytes, and it is smaller than `rand()`. This random-rotate version use a single 32-bit state and is a good code choice for this size:
 ```c
@@ -84,7 +84,7 @@ uint16_t pcg16(void) {
 }
 ```
 ## xorshift16
-[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following 32-bit state (two `uint16_t`) random-shift version. It is also smaller than `rand()`, but fails PractRand tests at 2^16 bytes:
+[Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following simple 32-bit state (two `uint16_t`) random-shift version. Though smaller than `rand()`, it fails PractRand tests with just 2^16 bytes:
 ```c
 uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
@@ -94,6 +94,22 @@ uint16_t rnd_xorshift_16(void) {
 	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
 }
 ```
+## JSF16
+Bob Jenkin shared [his small PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. Dubbed as 'chaotic' Jenkins Fast Small or JSF, it [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the 16-bit version that with 64-bit internal state:
+```c
+#define rot16(x,k) (((x) << (k))|((x) >> (16 - (k))))
+uint16_t jsf16(void) {
+	static uint16_t a = 0xf1ea;
+	static uint16_t b = 0x80cc, c = 0x80cc, d = 0x80cc;
+
+	uint16_t e = a - rot16(b, 13);
+	a = b ^ rot16(c, 8);
+	b = c + d;
+	c = d + e;
+	return d = e + a;
+}
+```
+Unlike other 16-bit peers, his algorithm output will only fail PractRand at a huge 2^47 bytes (128 TB) output.
 # 8-bit PRNGs
 This class is where limitation of state sizes is apparent. Poorly implemented linear-feedback shift register (LFSR) codes will render bitmap repetition and fail PractRand at low output sizes. Good algorithms will typically use 32-bit states, with four `uint8_t` integers.
 ## Tzarc's XORshift
@@ -144,14 +160,14 @@ uint8_t xshift8(void) {
 	return a = z ^ ( z >> 1) ^ t ^ (t << 3);
 }
 ```
-This simple algorithm is surprisingly robust, failing PracRand only at large 2^29 bytes output and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
+This simple algorithm is surprisingly robust, failing PracRand at large 2^16 bytes output and renders a pattern-free bitmap, making it a good 8-bit candidate for small systems:
 
 ![xshift8](images/xshift8.bmp)
 
 ## JSF8
-Finally there's [Bob Jenkin's PRNG](http://burtleburtle.net/bob/rand/talksmall.html) that uses 128-bit state. His code is dubbed 'chaotic' Jenkins Fast Small or JSF, and [was adapted to different state sizes](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html). Here is the fast 8-bit version that uses random-rotation with 32-bit internal state:
+Finally there is [Jenkin's `chaotic` PRNG](http://burtleburtle.net/bob/rand/smallprng.html), in the adapted [8-bit output](https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html) version that uses random-rotation of 32-bit internal state:
 ```c
-#define rot8(x,k) ((x << k)|(x >> (8 - k)))
+#define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
 uint8_t jsf8(void) {
 	static uint8_t a = 0xf1;
 	static uint8_t b = 0xee, c = 0xee, d = 0xee;
@@ -163,7 +179,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-And behold, this diminutive algorithm is both small and fast without multiplication. JSF8 also fails PractRand at large 2^29 bytes output and generates a noisy image—making it the perfect 8-bit PRNG for embedded firmware:
+This diminutive algorithm is both small and fast without multiplication. It fails PractRand at a large 2^29 bytes output and generates a noisy image—making it the best 8-bit PRNG for embedded firmware:
 
 ![jsf8](images/jsf8.bmp)
 
