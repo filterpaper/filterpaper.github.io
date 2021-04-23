@@ -90,7 +90,7 @@ uint16_t rnd_xorshift_16(void) {
 	// Seed both 16bit manually
 	static uint16_t x = 1, y = 1;
 	uint16_t t = (x ^ (x << 5U));
-	x = y * 3;
+	x = y;
 	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
 }
 ```
@@ -133,18 +133,18 @@ An 8-bit output version of PCG can be found in the [pcg-c-basic library](https:/
 ```c
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
-	// Seed this 16bit manually
-	static uint16_t state = 0x6835;
+	static uint16_t state = 0x2fd5;
+	static uint16_t const inc = 0x8893;
 
-	uint16_t oldstate = state;
-	state = state * 12829U;
+	uint16_t x = state;
+	state = state * 12829U + (inc|1);
 
-	uint8_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
-	uint32_t rot = oldstate >> 13U;
+	uint16_t value = ((x >> 5U) ^ x) >> 5U;
+	uint32_t rot = x >> 13U;
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 ```
-Unlike its larger PCG cousins, this fails PractRand with just 2^10 bytes and its image output has visual waves:
+State multiplication will be slower on small systems. Unlike its larger PCG cousins, this fails PractRand with just 2^10 bytes and its image output has visual waves:
 
 ![pcg8](images/pcg8.bmp)
 
