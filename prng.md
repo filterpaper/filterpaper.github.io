@@ -83,6 +83,7 @@ uint16_t pcg16(void) {
 	return (value >> rot) | (value << ((- rot) & 15));
 }
 ```
+Do note that all versions of PCG store state sizes that are 'twice' the size of its output. Keep this in mind when deploying PCG on embedded systems.
 ## xorshift16
 [Brad Forschinger](http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html) shrank Marsaglia's XORshift into the following simple 32-bit state (two `uint16_t`) random-shift version. It fails PractRand tests with just 2^16 bytes (64 kilobytes):
 ```c
