@@ -292,7 +292,7 @@ uint8_t jsf8(void) {
 	return d = e + a;
 }
 ```
-Replace integers with 16-bit if required.
+Add that code function to source or `keymap.c` file and call `jsf8()` instead of `rand()`.
 
 ## Quote
 "It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines."
