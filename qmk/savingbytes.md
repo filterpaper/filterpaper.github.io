@@ -271,13 +271,13 @@ current_frame = (current_frame + 1) % TAP_FRAMES;
 
 current_frame = (current_frame + 1) % IDLE_FRAMES;
 ```
-TAP_FRAMES value is fixed at 2. Modulo operations for powers of two (2^n) can simply be replaced with bit wise "and" of (2^n - 1):
+TAP_FRAMES value is fixed at 2. Modulo of powers of two (2^n) can be replaced with bit-wise "and" of (2^n - 1):
 ```c
 current_frame = (current_frame + 1) & 1;
 ```
-IDLE_FRAMES value is fixed at 5, and the modulo operation can be replaced by this ternary:
+IDLE_FRAMES is 5, and `current_frame` increment is modulo of it. So that operation can replaced with a fast ternary statement:
 ```c
-current_frame = (current_frame + 1 > 4) ? 0 : current_frame + 1;
+current_frame = (current_frame + 1 > IDLE_FRAMES - 1) ? 0 : current_frame + 1;
 ```
 ## Xorshift pseudo random number generator
 The C library `rand()` is huge. If simple random numbers is required for insensitive use like animation or lighting, Bob Jenkin's small PRNG below can save about 200 bytes:
