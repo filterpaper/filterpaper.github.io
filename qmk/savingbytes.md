@@ -267,8 +267,10 @@ void render_bongocat(void) {
 ## Avoid division
 Division code is costly in terms of speed and size for AVR controllers. Modulo operations below to iterate frames from 0 ~ (*_FRAMES-1) is not efficient for AVRs:
 ```c
-current_frame = (current_frame + 1) % TAP_FRAMES;
+#define IDLE_FRAMES 5
+#define TAP_FRAMES 2
 
+current_frame = (current_frame + 1) % TAP_FRAMES;
 current_frame = (current_frame + 1) % IDLE_FRAMES;
 ```
 TAP_FRAMES value is fixed at 2. Modulo of powers of two (2^n) can be replaced with bit-wise "and" of (2^n - 1):
