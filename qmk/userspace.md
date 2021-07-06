@@ -172,9 +172,9 @@ qmk flash ~/qmk_firmware/users/newbie/crkbd.json
 ```
 
 # Advance wrapper layout
-Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to power users that prefers editing layouts in `keymap.c` text format. Key map wrapper can be adapted to use json file format.
+Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to power users that prefers editing layouts in `keymap.c` text format. Key map wrapper can be adapted to use json file.
 ## planck.json
-Instead of exporting from the Configurator, create a `planck.json` file with *macro* names that make sense for each row:
+Instead of exporting from the Configurator, create a `planck.json` file with *macro* names that make sense for each layer:
 ```json
 {
     "author": "",
