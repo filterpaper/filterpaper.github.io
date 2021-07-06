@@ -230,7 +230,7 @@ Add the line `#include "wrappers.h"` into `config.h`. The `qmk` compile or flash
 ```
 qmk flash ~/qmk_firmware/users/newbie/planck.json
 ```
-The added advantage of using wrapper is ability to share layouts with different keyboards. The first 3x12 row of this Planck layout can be reused on a split Corne keyboard.
+The added advantage of using wrapper is ability to share layouts with different keyboards.
 
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
