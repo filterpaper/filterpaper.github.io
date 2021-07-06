@@ -138,9 +138,9 @@ if (get_mods() & MOD_MASK_CSAG) {
 You can save 10 bytes by decrementing to 0 because machine language will exit zero state with lesser code:
 ```c
 if (get_mods() & MOD_MASK_CSAG) {
-	for (uint_fast8_t i = DRIVER_LED_TOTAL; i > 0; --i) {
-		if (HAS_FLAGS(g_led_config.flags[i-1], LED_FLAG_MODIFIER)) {
-			rgb_matrix_set_color(i-1, RGB_MODS);
+	for (uint_fast8_t i = DRIVER_LED_TOTAL - 1; i >= 0; --i) {
+		if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_MODIFIER)) {
+			rgb_matrix_set_color(i, RGB_MODS);
 		}
 	}
 }
