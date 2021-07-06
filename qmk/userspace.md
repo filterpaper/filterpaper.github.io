@@ -193,7 +193,7 @@ Instead of exporting from the Configurator, create a `planck.json` file with *ma
 }
 ```
 ## wrappers.h
-Create a `wrappers.h` file to map those macro names to actual key layout (like a typically `keymap.c`):
+Create a `wrappers.h` file to map those macro names to actual key layout (like a typical `keymap.c`):
 ```
 #pragma once
 #define LAYOUT_wrapper_ortho_4x12(...) LAYOUT_ortho_4x12(__VA_ARGS__)
