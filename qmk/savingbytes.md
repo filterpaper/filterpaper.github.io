@@ -128,7 +128,7 @@ static void animate_cat(void) {
 The following is modifier key lighting code, using a typical `for` loop with incrementing counter:
 ```c
 if (get_mods() & MOD_MASK_CSAG) {
-	for (uint_fast8_t i = 0; i < DRIVER_LED_TOTAL; ++i) {
+	for (uint8_t i = 0; i < DRIVER_LED_TOTAL; ++i) {
 		if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_MODIFIER)) {
 			rgb_matrix_set_color(i, RGB_MODS);
 		}
@@ -138,7 +138,7 @@ if (get_mods() & MOD_MASK_CSAG) {
 You can save 10 bytes by decrementing to 0 because machine language will exit zero state with lesser code:
 ```c
 if (get_mods() & MOD_MASK_CSAG) {
-	for (uint_fast8_t i = DRIVER_LED_TOTAL; i > 0; --i) {
+	for (uint8_t i = DRIVER_LED_TOTAL; i > 0; --i) {
 		if (HAS_FLAGS(g_led_config.flags[i-1], LED_FLAG_MODIFIER)) {
 			rgb_matrix_set_color(i-1, RGB_MODS);
 		}
@@ -148,7 +148,7 @@ if (get_mods() & MOD_MASK_CSAG) {
 ## Use "if" instead of "switch" for non-sequential
 The `switch` statement is easy to read for multi-choice condition, but it can also be space consuming when matched cases are not sequential. In the following "capsword" function example, the first switch statement filters for modifier and layer tap keycodes to apply a bitmask:
 ```c
-static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
+static void process_caps_word(uint16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
 	switch (keycode) {
 	case QK_MOD_TAP ... QK_MOD_TAP_MAX:
@@ -168,7 +168,7 @@ static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) 
 ```
 That `switch` statement is comparing mod and layer tap cases that are not sequential. Replacing that with a multi-conditional `if` statement saved 6 bytes:
 ```c
-static void process_caps_word(uint_fast16_t keycode, keyrecord_t const *record) {
+static void process_caps_word(uint16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
 	if (((QK_MOD_TAP <= keycode && keycode <= QK_MOD_TAP_MAX) ||
 		(QK_LAYER_TAP <= keycode && keycode <= QK_LAYER_TAP_MAX)) &&
@@ -213,13 +213,13 @@ Function calls inside conditional `if` statements can contribute to code bloat. 
 ```c
 void render_bongocat(void) {
 	// WPM triggered typing timer
-	static uint_fast8_t prev_wpm = 0;
-	static uint_fast32_t tap_timer = 0;
+	static uint8_t prev_wpm = 0;
+	static uint32_t tap_timer = 0;
 
 	if (get_current_wpm() >prev_wpm) { tap_timer = timer_read32(); }
 	prev_wpm = get_current_wpm();
 
-	static uint_fast16_t anim_timer = 0;
+	static uint16_t anim_timer = 0;
 
 	void animation_phase(void) {
 		oled_clear();
@@ -240,14 +240,14 @@ External function `timer_elapsed32(tap_timer)` is called multiple times to evalu
 ```c
 void render_bongocat(void) {
 	// WPM triggered typing timer
-	static uint_fast8_t prev_wpm = 0;
-	static uint_fast32_t tap_timer = 0;
+	static uint8_t prev_wpm = 0;
+	static uint32_t tap_timer = 0;
 
 	if (get_current_wpm() >prev_wpm) { tap_timer = timer_read32(); }
 	prev_wpm = get_current_wpm();
 
-	static uint_fast16_t anim_timer = 0;
-	uint_fast32_t keystroke = timer_elapsed32(tap_timer);
+	static uint16_t anim_timer = 0;
+	uint32_t keystroke = timer_elapsed32(tap_timer);
 
 	void animation_phase(void) {
 		oled_clear();
