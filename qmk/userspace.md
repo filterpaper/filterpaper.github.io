@@ -232,6 +232,10 @@ qmk flash ~/qmk_firmware/users/newbie/planck.json
 ```
 The added advantage of using wrapper is ability to share layouts with different keyboards.
 
+# Caveat / Limitations
+
+`config.h` is the only header file included with the keymap built from a json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus custom keycodes that starts at `SAFE_RANGE` cannot be defined as an enumeration data type in `config.h`. Manually defining safe custom keycode range is the only workaround.
+
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
 
