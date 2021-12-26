@@ -1,10 +1,12 @@
 # Visual Guide to socket a Microcontroller
 ## Required Hardware
-* [Elite-C](https://boardsource.xyz/store/5ef67ea66786dc1e65a80708)
-* [Pro Micro C](https://www.aliexpress.com/item/1005003230811462.html)
+* [Elite-C](https://boardsource.xyz/store/5ef67ea66786dc1e65a80708) or [Pro Micro C](https://www.aliexpress.com/item/1005003230811462.html)
 * Mill-Max [315-43-112-41-003000](https://www.digikey.com/en/products/detail/315-43-112-41-003000/ED4764-12-ND/4455232) low sockets for Elite-C
 * Machined [header sockets](https://www.aliexpress.com/item/32852480645.html) Pro Micro C
 * Mill-Max [connector pins](https://www.digikey.com/product-detail/en/3320-0-00-15-00-00-03-0/ED1134-ND/4147392)
+* Soldering iron and solder
+* Flush cutters and needle-nose pliers
+* Kapton or regular tape
 
 ## Step 1: Solder Sockets onto PCB
 ![1_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/1_socket.png)
