@@ -9,29 +9,31 @@
 ## Step 1: Solder Sockets onto PCB
 ![1_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/1_socket.png)
 
+Cut sockets with a flush cutter into rows of 12 and solder both onto the PCB.
+
 ## Step 2: Cover Sockets with tape
 ![2_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/2_socket.png)
 
-This will protect solder flow from fusing with the sockets. Heat resistance Kapton tape is preferred but any regular ones will work as well.
+Cover both rows with tape to protect against solder flow from fusing with sockets. Heat resistance Kapton tape is preferred but any regular ones will work as well.
 
 ## Step 3: Insert Mill-Max pins
 ![3_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/3_socket.png)
 
-Use a needle-nose plier to hold each pin to pierce and insert them. Make sure they are all fully inserted and even: 
+Hold pins with needle-nose pliers to pierce and insert them into the sockets. Make sure they are all fully inserted and even: 
 
 ![4_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/4_socket.png)
 
-## Step 4: Solder MCU on pins
+## Step 4: Solder the MCU
 ![5_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/5_socket.png)
 
-Place the controller over the pins, and tape it down flat. Solder each pin carefully:
+Place the microcontroller over the pins, and tape it down flat. Solder each pin carefully:
 
 ![6_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/6_socket.png)
 
 ## Step 5: Remove MCU and tape
 ![7_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/7_socket.png)
 
-Pry the MCU carefully and evenly from the socket, remove the tape and you're done:
+Pry the MCU carefully and evenly from the socket, remove the tape and it is done:
 
 ![8_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/8_socket.png)
 
