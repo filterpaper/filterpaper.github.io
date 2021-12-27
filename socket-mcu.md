@@ -28,7 +28,7 @@ Hold pins with needle-nose pliers to pierce and insert them into the sockets. Mi
 ## Step 4: Solder the MCU
 ![5_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/5_socket.png)
 
-!> Double check for proper orientation of the microcontroller before proceeding.
+> ***Double check for proper orientation of the microcontroller pins before proceeding***
 
 Place the microcontroller over the pins, and tape it down flat. Solder each pin carefully:
 
