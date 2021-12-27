@@ -11,7 +11,7 @@
 ## Step 1: Solder Sockets onto PCB
 ![1_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/1_socket.png)
 
-Cut sockets with a flush cutter into rows of 12 (if they are not pre-cut) and solder a pair onto the PCB.
+Cut sockets with a flush cutter into rows of 12 (if they are not pre-cut), tape and solder a solder them onto the PCB.
 
 ## Step 2: Cover Sockets with tape
 ![2_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/2_socket.png)
