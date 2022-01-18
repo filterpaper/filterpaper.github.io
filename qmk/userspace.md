@@ -234,7 +234,7 @@ The added advantage of using wrapper is ability to share layouts with different 
 
 # Caveat / Limitations
 
-`config.h` is the only header file included with the keymap built from a json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus custom keycodes that starts at `SAFE_RANGE` cannot be defined as an enumeration data type in `config.h`. Manually defining safe custom keycode range is the only workaround.
+`config.h` is the only header file included with the keymap built from a json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus custom keycodes that starts at `SAFE_RANGE` cannot be defined as an enumeration data type in `config.h`. Manually defining safe custom keycode range is the only workaround. Manually expanding the json file using `rules.mk` was also proposed in [PR #15480](https://github.com/qmk/qmk_firmware/pull/15480).
 
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
