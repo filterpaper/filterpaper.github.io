@@ -280,16 +280,16 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        path: users/newbie
+        path: users/${{ github.actor }}
         fetch-depth: 1
         persist-credentials: false
 
     - name: Build firmware
-      run: qmk compile "users/newbie/keymaps/${{ matrix.keyboard }}.json"
+      run: qmk compile "users/${{ github.actor }}/keymaps/${{ matrix.keyboard }}.json"
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: newbie_firmware
+        name: ${{ github.actor }}_firmware
         path: '*.hex'
         retention-days: 5
 ```
