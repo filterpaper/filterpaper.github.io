@@ -248,7 +248,7 @@ When setup in this manner, `~/qmk_firmware/` can be updated directory from the Q
 
 ## Building with GitHub Actions
 [GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, with the following directives (space indentation is important):
-```
+````yml
 name: Build userspace
 
 on:
@@ -292,7 +292,8 @@ jobs:
         name: ${{ github.actor }}_firmware
         path: '*.hex'
         retention-days: 5
-```
+
+````
 Names that follow `matrix.keyboard:` should contain the names of keyboard that matches the json files (`planck` and `crkbd` in the example above). The workflow will clone the QMK firmware and userspace repository into a container to build against the listed json files. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
 # Summary
