@@ -289,7 +289,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: filterpaper_firmware
+        name: newbie_firmware
         path: '*.hex'
         retention-days: 5
 ```
