@@ -244,10 +244,10 @@ With userspace setup as an independent folder, it can be stored in a personal Gi
 ~/qmk_firmware/              : https://github.com/qmk/qmk_firmware
 ~/qmk_firmware/users/newbie/ : git@github.com:newbie/qmk_userspace.git
 ```
-When setup in this manner, `~/qmk_firmware/` can be updated directly, while `~/qmk_firmware/users/newbie/` will be independent instead of a fork.
+When setup in this manner, `~/qmk_firmware/` can be updated directory from the QMK origin instead of a fork, while `~/qmk_firmware/users/newbie/` will be independent from the root QMK repository.
 
 ## Building with GitHub Actions
-[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, containing the following build directives:
+[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, with the following directives (space indentation is important):
 ```xml
 name: Build userspace
 
@@ -256,7 +256,7 @@ on:
     branches:
       - main
 
-workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   Build:
@@ -293,7 +293,7 @@ jobs:
         path: '*.hex'
         retention-days: 5
 ```
-The `matrix.keyboard:` should contain the names of keyboard that matches the json files. The workflow will clone the QMK firmware and userspace repository into a container to build against the listed json files. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
+Names that follow `matrix.keyboard:` should contain the names of keyboard that matches the json files (`planck` and `crkbd` in the example above). The workflow will clone the QMK firmware and userspace repository into a container to build against the listed json files. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
