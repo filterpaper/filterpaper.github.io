@@ -248,7 +248,7 @@ When setup in this manner, `~/qmk_firmware/` can be updated directory from the Q
 
 ## Building with GitHub Actions
 [GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, with the following directives (space indentation is important):
-```xml
+```
 name: Build userspace
 
 on:
