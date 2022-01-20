@@ -236,6 +236,65 @@ The added advantage of using wrapper is ability to share layouts with different 
 
 `config.h` is the only header file included with the keymap built from a json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus custom keycodes that starts at `SAFE_RANGE` cannot be defined as an enumeration data type in `config.h`. Manually defining safe custom keycode range is the only workaround. Manually expanding the json file using `rules.mk` was also proposed in [PR #15480](https://github.com/qmk/qmk_firmware/pull/15480).
 
+# GitHub Integration
+
+## Userspace Repository
+With userspace setup as an independent folder, it can be stored in a personal GitHub repository distinct from QMK's. A different `git` origin can be setup within `~/qmk_firmware/users/newbie/` to point `https://github.com/newbie/`, for example:
+```
+~/qmk_firmware/              : https://github.com/qmk/qmk_firmware
+~/qmk_firmware/users/newbie/ : git@github.com:newbie/qmk_userspace.git
+```
+When setup in this manner, `~/qmk_firmware/` can be updated directly, while `~/qmk_firmware/users/newbie/` will be independent instead of a fork.
+
+## Building with GitHub Actions
+[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, containing the following build directives:
+```xml
+name: Build userspace
+
+on:
+  push:
+    branches:
+      - main
+
+workflow_dispatch:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        keyboard:
+          - planck
+          - crkbd
+
+    container: qmkfm/qmk_cli
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: qmk/qmk_firmware
+        fetch-depth: 1
+        persist-credentials: false
+        submodules: recursive
+
+    - uses: actions/checkout@v2
+      with:
+        path: users/newbie
+        fetch-depth: 1
+        persist-credentials: false
+
+    - name: Build firmware
+      run: qmk compile "users/newbie/keymaps/${{ matrix.keyboard }}.json"
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: filterpaper_firmware
+        path: '*.hex'
+        retention-days: 5
+```
+The `matrix.keyboard:` should contain the names of keyboard that matches the json files. The workflow will clone the QMK firmware and userspace repository into a container to build against the listed json files. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
+
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
 
