@@ -68,7 +68,7 @@ The following are some examples.
 
 ## rules.mk
 QMK features can be enabled exclusively for specific hardware with `ifeq` blocks:
-```c
+```make
 # Common feature for all keyboards
 BOOTMAGIC_ENABLE = yes
 EXTRAKEY_ENABLE = yes
@@ -247,54 +247,9 @@ With userspace setup as an independent folder, it can be stored in a personal Gi
 When setup in this manner, `~/qmk_firmware/` can be updated directory from the QMK origin instead of a fork, while `~/qmk_firmware/users/newbie/` will be independent from the root QMK repository.
 
 ## Building with GitHub Actions
-[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, with the following directives (space indentation is important):
-````yml
-name: Build userspace
+[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the file `.github/workflows/build-qmk.yml` within the userspace folder `~/qmk_firmware/users/newbie/`, with this example [build-qmk.yml](build-qmk.yml).
 
-on:
-  push:
-    branches:
-      - main
-
-  workflow_dispatch:
-
-jobs:
-  Build:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        keyboard:
-          - planck
-          - crkbd
-
-    container: qmkfm/qmk_cli
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        repository: qmk/qmk_firmware
-        fetch-depth: 1
-        persist-credentials: false
-        submodules: recursive
-
-    - uses: actions/checkout@v2
-      with:
-        path: users/${{ github.actor }}
-        fetch-depth: 1
-        persist-credentials: false
-
-    - name: Build firmware
-      run: qmk compile "users/${{ github.actor }}/keymaps/${{ matrix.keyboard }}.json"
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.actor }}_firmware
-        path: '*.hex'
-        retention-days: 5
-
-````
-Names that follow `matrix.keyboard:` should contain the names of keyboard that matches the json files (`planck` and `crkbd` in the example above). The workflow will clone the QMK firmware and userspace repository into a container to build against the listed json files. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
+Names that follow `matrix.keyboard:` are keyboards that matches the json files (`planck` and `crkbd` in the example file). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build the firmwares. The output firmware zip file will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
