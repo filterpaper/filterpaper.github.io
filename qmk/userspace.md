@@ -280,7 +280,7 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        path: users/${{ github.actor }}
+        path: users/$\{\{ github.actor }}
         fetch-depth: 1
         persist-credentials: false
 
