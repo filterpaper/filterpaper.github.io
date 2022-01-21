@@ -7,7 +7,6 @@ The workflow should be setup in a personal or development branch, not the `maste
 Create a `build.yml` in the folder location `~/qmk_firmware/.github/workflows`, with the following content:
 
 ```yml
-
 name: Build firmware for keyboards
 on: [push, workflow_dispatch]
 
@@ -33,7 +32,7 @@ jobs:
         submodules: true
 
     - name: Build firmware
-      run: make ${{ matrix.keyboard }}:${{ matrix.user }}
+      run: qmk compile -kb ${{ matrix.keyboard }} -km ${{ matrix.user }}
 
     - name: Archive firmware
       uses: actions/upload-artifact@v2
