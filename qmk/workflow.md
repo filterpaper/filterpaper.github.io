@@ -74,6 +74,7 @@ matrix:
 # Submitting the workflow
 Ensure that a user keymap has been created for every keyboard listed in the workflow. Commit them, along with the workflow file `~/qmk_firmware/.github/workflows/build.yml` in your branch and `git push` the commit to GitHub.
 
-Load the GitHub page of your QMK fork (e.g. https://github.com/git_username/qmk_firmware) and visit the "Actions" tab. On the left "Workflows" sidebar, you will find one labelled `Build firmware for keyboards`. Selecting that will display the workflows run table.
-
-Select the latest workflow in the table will display the job status, as well as successfully compiled firmware files under the "Artifacts" section that can be downloaded and flashed to your keyboard.
+Load the GitHub page of your QMK fork (e.g. https://github.com/git_username/qmk_firmware) and visit the "Actions" tab. On the left "Workflows" sidebar, you will find one labelled `Build firmware for keyboards` that was initiated by the `build.yml` file.
+1. Select `Build firmware for keyboards` to display its run on the right table.
+2. Select the latest workflow in the table will display the job status.
+3. Successfully compiled firmware can be downloaded from the "Artifacts" section.
