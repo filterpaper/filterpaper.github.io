@@ -53,9 +53,9 @@ Workflow matrix in the example above is using the keyboard `clueboard/66/rev4`. 
 ```yml
 matrix:
   keyboard:
-	- crkbd/rev1
-	- ferris/sweep
-	- planck/rev6
+    - crkbd/rev1
+    - ferris/sweep
+    - planck/rev6
 ```
 
 The example also uses your GitHub user name as the default for the keymap name with the parameter `${{ github.actor }}`. You can change that and add more user keymaps to build, e.g.:
@@ -63,12 +63,12 @@ The example also uses your GitHub user name as the default for the keymap name w
 ```yml
 matrix:
   keyboard:
-	- crkbd/rev1
-  	- ferris/sweep
-  	- planck/rev6
+    - crkbd/rev1
+    - ferris/sweep
+    - planck/rev6
   user:
-	- my_keymap_name
-	- default
+    - my_keymap_name
+    - default
 ```
 
 # Submitting the workflow
@@ -76,4 +76,4 @@ Ensure that a user keymap has been created for every keyboard listed in the work
 
 Load the GitHub page of your QMK fork (e.g. https://github.com/git_username/qmk_firmware) and visit the "Actions" tab. On the left "Workflows" sidebar, you will find one labelled `Build firmware for keyboards`. Selecting that will display the workflows run table.
 
-Select the latest workflow in the table will display the job status, as well as successfully compiled firmware files under the "Artifacts" section that can be downloaded and flashed to your keyboard. 
+Select the latest workflow in the table will display the job status, as well as successfully compiled firmware files under the "Artifacts" section that can be downloaded and flashed to your keyboard.
