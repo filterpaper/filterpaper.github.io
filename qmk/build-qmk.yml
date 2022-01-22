@@ -39,4 +39,5 @@ jobs:
         path: |
           *.hex
           *.bin
+          *.uf2
       continue-on-error: true
