@@ -9,8 +9,10 @@ jobs:
       fail-fast: false
       matrix:
         keyboard:
-          - planck
-          - crkbd
+        - planck
+        - crkbd
+        keymap:
+        - ${{ github.actor }}
 
     steps:
     - name: Checkout QMK
@@ -24,17 +26,20 @@ jobs:
     - name: Checkout userspace
       uses: actions/checkout@v2
       with:
-        path: users/${{ github.actor }}
+        path: users/${{ matrix.keymap }}
         fetch-depth: 1
         persist-credentials: false
 
     - name: Build firmware
-      run: qmk compile "users/${{ github.actor }}/${{ matrix.keyboard }}.json"
+      run: |
+        qmk compile "users/${{ matrix.keymap }}/keymaps/${{ matrix.keyboard }}.json"
+        OUTPUT=$(echo "${{ matrix.keyboard }}" | sed 's#/#_#g')_${{ matrix.keymap }}
+        echo "::set-output name=artifact-name::${OUTPUT}"
 
     - name: Archive firmware
       uses: actions/upload-artifact@v2
       with:
-        name: "${{ matrix.keyboard }}_firmware"
+        name: ${{ steps.build.outputs.artifact-name }}_firmware
         retention-days: 2
         path: |
           *.hex
