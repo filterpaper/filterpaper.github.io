@@ -244,10 +244,10 @@ With userspace setup as an independent folder, it can be stored in a personal Gi
 ~/qmk_firmware/              : https://github.com/qmk/qmk_firmware
 ~/qmk_firmware/users/newbie/ : git@github.com:newbie/qmk_userspace.git
 ```
-When setup in this manner, `git pull` inside `~/qmk_firmware/` will update directly from QMK repository, while `~/qmk_firmware/users/newbie/` will be pull and push from GitHub `newbie`.
+When setup in this manner, `git pull` inside `~/qmk_firmware/` will update directly from QMK repository, while `~/qmk_firmware/users/newbie/` update from `newbie` GitHub repository.
 
 ## Building with GitHub Actions
-[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml`, with this example [build-qmk.yml](build-qmk.yml).
+[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml`, with this example: [build-qmk.yml](build-qmk.yml).
 
 The `matrix.keyboard:` list are names that matches the json files (`planck` and `crkbd` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
