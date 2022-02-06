@@ -122,26 +122,27 @@ jobs:
 
 Committing a change to the repository will automatically trigger the workflow to build every json file listed in the `file:` section.
 
-# Review Actions
+# Review GitHub Actions
 
 * Return to your [GitHub](https://github.com/) page and the `qmk_keymap` repository.
 * Select the `Actions` tab to display the `Build QMK Firmware` workflow.
 * Select that workflow to display its run from the last commit.
-* Successfully compiled firmware is found under the `Artifacts` section:
+* Successfully compiled firmware will be under the `Artifacts` section:
 
 ![workflow7](workflow7.png)
 
 Download and flash the firmware file into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox). If there are build errors, review the job log for details.
 
 
-# Next Steps
+# Customising QMK
 
-You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor:
+You can proceed to customise the QMK firmware using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor:
 
 * Create a `config.h` file for QMK variables and definitions.
 * Create a `rules.mk` to enable and disable QMK features.
 * Create a `source.c` file for your customised code.
   * Add `SRC += source.c` to `rules.mk` to build this source.
+* Commits will automatically trigger firmware build actions.
 
 Additional keymaps for other keyboards must be retained in json format and appended to the `file:` matrix list in `build.yml`.
 
@@ -149,5 +150,5 @@ Additional keymaps for other keyboards must be retained in json format and appen
 # References
 
 * [QMK Userspace guide](https://docs.qmk.fm/#/feature_userspace)
-* [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor
+* [github.dev editor](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor)
 * [GitHub Actions guide](https://docs.github.com/en/actions/learn-github-actions)
