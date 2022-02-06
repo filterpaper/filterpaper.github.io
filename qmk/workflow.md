@@ -105,7 +105,7 @@ jobs:
 {% endraw %}
 ```
 
-Do note that proper spacing is important in the workflow `yml` file.
+Do note that the `build.yml` requires proper indentation on every line.
 
 ## Customising the Workflow
 
