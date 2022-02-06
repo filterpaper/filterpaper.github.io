@@ -4,19 +4,28 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 
 # Create a Keymap
 
-Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site. Select your keyboard from the drop-down list (and choose a layout if required). Use your GitHub username for the `Keymap Name` field, e.g.:
+* Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site.
+* Select your keyboard from the drop-down list (and choose a layout if required).
+* Use your GitHub username for the `Keymap Name` field, e.g.:
 
 ![workflow1](workflow1.png)
 
-Customise the key map according to your preference. When you're done, click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer. Rename the json to your keyboard name, e.g. `cradio.json`, and note its location.
+* Customise the key map according to your preference.
+* When you're done, click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer.
+* Rename the json to your keyboard name, e.g. `cradio.json`, and note its location.
 
 # Create a Repository
 
-Login to your GitHub account, select the `Repositories` tab, and click on `New` on the right to create a new repository. You can name it `qmk_keymap` (or anything unique). Leave the other settings as default and click on `Create repository` at the bottom of the page:
+* Login to your GitHub account.
+* Select the `Repositories` tab, and click on `New` on the right to create a new repository.
+* You can name it `qmk_keymap` (or anything unique).
+* Leave the other settings as default and click on `Create repository` at the bottom of the page:
 
 ![workflow2](workflow2.png)
 
-In the `Quick setup` page that follows, select `uploading an existing file`. Find the json file from the previous step (`cradio.json` in the example) and drag it into the browser page to upload. Write a meaningful commit message below and select `Commit changes` at the bottom of the page:
+* In the `Quick setup` page that follows, select `uploading an existing file`.
+* Find the json file from the previous step (`cradio.json` in the example) and drag it into the browser page to upload.
+* Write a meaningful commit message below and select `Commit changes` at the bottom of the page:
 
 ![workflow3](workflow3.png)
 
@@ -24,11 +33,13 @@ In the `Quick setup` page that follows, select `uploading an existing file`. Fin
 
 Back in the `qmk_keymap` repository page, press the period (`.`) key. The [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based VSCode editor will be loaded. This interface is where you can edit and commit code directly to GitHub.
 
-1. In the left `Explorer` section, click on the `New Folder` icon to create a folder named `.github/workflows` (note the `.` prefix). Press enter to complete the action:
+* In the left `Explorer` section, click on the `New Folder` icon to create a folder named `.github/workflows` (note the `.` prefix). Press enter to complete the action:
 ![workflow4](workflow4.png)
-2. Click on the new `.github/workflows` folder and select the `New File` icon. Create a file named `build.yml` and press enter to complete:
+
+* Click on the new `.github/workflows` folder and select the `New File` icon. Create a file named `build.yml` and press enter to complete:
 ![workflow5](workflow5.png)
-3. With the `build.yml` file selected, paste the following workflow content into the editor window on the right side:
+
+* With the `build.yml` file selected, paste the following workflow content into the editor window on the right side:
 
 ```yml
 {% raw %}
@@ -90,11 +101,14 @@ Do note that proper spacing is important in the workflow `yml` file.
 
 ## Customising the Workflow
 
-The matrix `file:` is a list of json files to be built (`- cradio.json` in the example). Change this section to the name of your json file. Additional entries (with `-` prefix) can be added here to build more than one keyboard. The `user:` section defaults to your GitHub username. Change that line accordingly if you used a different keymap name for the json file in the first step.
+The matrix `file:` is a list of json files to be built (`- cradio.json` in the example).
+̃* Change this section to the name of your json file. Additional entries (with `-` prefix) can be added here to build more than one keyboard.
+̃* The `user:` section defaults to your GitHub username. Change that line accordingly if you used a different keymap name for the json file in the first step.
 
 ## Committing the Workflow
 
-Click on `Source Control` in the left column, enter a meaningful commit message, and click on the `Commit` checkmark above to commit the file directly to your repository:
+* Click on `Source Control` in the left column, enter a meaningful commit message.
+* Click on the `Commit` checkmark above to commit the file directly to your repository:
 
 ![workflow6](workflow6.png)
 
