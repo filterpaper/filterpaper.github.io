@@ -16,7 +16,7 @@ Login to your GitHub account, select the `Repositories` tab, and click on `New` 
 
 ![workflow2](workflow2.png)
 
-In the `Quick setup` page that follows, select `uploading an existing file`. Find the json file from the previous step (`cradio.json` in the example), and drag that file into the browser page to upload it. In the `Commit Changes`, write a meaningful commit message and select `Commit changes` at the bottom of the page.
+In the `Quick setup` page that follows, select `uploading an existing file`. Find the json file from the previous step (`cradio.json` in the example), and drag that file into the browser page to upload it. In the `Commit Changes`, write a meaningful commit message and select `Commit changes` at the bottom of the page:
 
 ![workflow3](workflow3.png)
 
@@ -101,6 +101,8 @@ Click on `Source Control` in the left column, enter a meaningful commit message,
 
 # Review Workflow actions
 
-Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` repository, and select the `Actions` tab. Here you will find the `Build QMK Firmware` workflow. Selecting the workflow will display its run from the last commit. Selecting that will show its run status. If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section.
+Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` repository, and select the `Actions` tab. Here you will find the `Build QMK Firmware` workflow. Selecting the workflow will display its run from the last commit. Selecting that will show its run status. If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
+
+![workflow7](workflow7png)
 
 You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor.
