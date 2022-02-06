@@ -247,7 +247,60 @@ With userspace setup as an independent folder, it can be stored in a personal Gi
 When setup in this manner, `git pull` inside `~/qmk_firmware/` will update directly from QMK repository, while `~/qmk_firmware/users/newbie/` update from `newbie` GitHub repository.
 
 ## Building with GitHub Actions
-[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml`, with this example: [build-qmk.yml](build-qmk.yml).
+[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml` with the following content:
+
+```yml
+{% raw %}
+name: Build userspace
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: qmkfm/qmk_cli
+    strategy:
+      fail-fast: false
+      matrix:
+        keyboard:
+        - planck
+        - crkbd
+        keymap:
+        - ${{ github.actor }}
+
+    steps:
+    - name: Checkout QMK
+      uses: actions/checkout@v2
+      with:
+        repository: qmk/qmk_firmware
+        fetch-depth: 1
+        persist-credentials: false
+        submodules: recursive
+
+    - name: Checkout userspace
+      uses: actions/checkout@v2
+      with:
+        path: users/${{ matrix.keymap }}
+        fetch-depth: 1
+        persist-credentials: false
+
+    - name: Build firmware
+      run: |
+        qmk compile "users/${{ matrix.keymap }}/keymaps/${{ matrix.keyboard }}.json"
+        OUTPUT=$(echo "${{ matrix.keyboard }}" | sed 's#/#_#g')_${{ matrix.keymap }}
+        echo "::set-output name=artifact-name::${OUTPUT}"
+
+    - name: Archive firmware
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ steps.build.outputs.artifact-name }}_firmware
+        retention-days: 2
+        path: |
+          *.hex
+          *.bin
+          *.uf2
+      continue-on-error: true
+{% endraw %}
+```
 
 The `matrix.keyboard:` list are names that matches the json files (`planck` and `crkbd` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
