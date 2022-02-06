@@ -105,4 +105,4 @@ Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` reposit
 
 ![workflow7](workflow7.png)
 
-You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor.
+You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor.
