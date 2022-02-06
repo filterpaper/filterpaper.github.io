@@ -1,6 +1,6 @@
 # QMK with GitHub Workflow
 
-Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can consume a lot of disk space. This is an alternative build environment that can be setup to run entirely on GitHub using Action workflow. It uses a standalone [Userspace](userspace.md) repository and a workflow that will build QMK firmware in a container. To begin, you will need an account on [GitHub](https://github.com/).
+Setting up a [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) can be onerous. Building locally with a `git` clone of a fork and `gcc` tools will also consume a lot of disk space. This is a setup guide for an Action workflow build environment that runs entirely on GitHub. It uses a standalone [Userspace](userspace.md) repository that will build QMK firmware in a container. To begin, you will need an account on [GitHub](https://github.com/).
 
 
 # Create a Keymap JSON
@@ -12,8 +12,8 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 ![workflow1](workflow1.png)
 
 * Customise the key map according to your preference.
-* Select download icon next to `KEYMAP.JSON` to save the layout file locally.
-* Rename the json to your keyboard name, e.g. `cradio.json`, and note its location.
+* Select download next to `KEYMAP.JSON` to save the json file locally.
+* Rename the file to your keyboard name, e.g. `cradio.json`, and note its location.
 
 
 # Create a Repository
@@ -28,7 +28,7 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 ## Upload the Keymap JSON
 
 * In the `Quick setup` page that follows, select `uploading an existing file`.
-* Locale the json file from the previous step (`cradio.json`).
+* Locale the json file (e.g. `cradio.json`) from the previous step.
 * Drag that file into the browser page to upload.
 * Write a meaningful commit message and select `Commit changes`:
 
@@ -43,11 +43,11 @@ Back in the `qmk_keymap` repository page, press the period (`.`) key. The [githu
 
 ![workflow4](workflow4.png)
 
-* Click on the new `.github/workflows` folder and select the `New File` icon. Create a file named `build.yml` and press enter to complete:
+* Click on the new `.github/workflows` folder and select the `New File` icon. Create a new file named `build.yml`:
 
 ![workflow5](workflow5.png)
 
-* With the `build.yml` file selected, paste the following workflow content into the editor window on the right side:
+* With the `build.yml` file selected, paste the following workflow content into the editor window on the right:
 
 ```yml
 {% raw %}
@@ -105,11 +105,11 @@ jobs:
 {% endraw %}
 ```
 
-Do note that the `build.yml` requires proper indentation on every line.
+(Do note that the `build.yml` workflow file requires proper indentation on every line.)
 
 ## Customising the Workflow
 
-* The matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
+* The workflow matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
 * Change this to your json file name. Additional files (with `-` prefix) can be appended for multiple keyboards.
 * GitHub username is default for `user:`. Change this accordingly if a different keymap name was used in [QMK Configurator](https://config.qmk.fm/#/).
 
@@ -120,7 +120,7 @@ Do note that the `build.yml` requires proper indentation on every line.
 
 ![workflow6](workflow6.png)
 
-Committing a change to the repository will automatically trigger build actions in the workflow.
+Committing a change to the repository will automatically trigger the workflow to build every json file listed in the `file:` section.
 
 # Review Workflow actions
 
