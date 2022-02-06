@@ -2,15 +2,15 @@
 
 QMK firmware can be compiled entirely on GitHub using Action workflow, without any tools installed locally. To begin, you will need a GitHub account setup.
 
-# Create A Keymap
+# Create a Keymap
 
-Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site. Select your keyboard from the drop-down list, and layout. Use your GitHub account username for the `Keymap Name` field, e.g.
+Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site. Select your keyboard from the drop-down list, and layout. Use your GitHub username for the `Keymap Name` field, e.g.:
 
 ![workflow1](workflow1.png)
 
 Customise the keymap according to your preference. Click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer. Rename it to your keyboard name, e.g. `cradio.json`, and note its location.
 
-# Create A Repository
+# Create a Repository
 
 Login to your GitHub account, select the `Repositories` tab, and click on `New` on the right to create a new repository. You can name it `qmk_keymap` (or a unique name). Leave the other settings as default and click on `Create repository` at the bottom of the page:
 
@@ -20,7 +20,7 @@ In the `Quick setup` page that follows, select `uploading an existing file`. Fin
 
 ![workflow3](workflow3.png)
 
-# Create A Workflow File
+# Create a Workflow file
 
 Back in the `/ qmk_keymap` repository page, press the period (`.`) key. The [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based VS Code editor will be loaded. This interface is where you can edit and commit code directly to GitHub.
 
@@ -89,11 +89,11 @@ jobs:
 {% endraw %}
 ```
 
-Do note that proper spacing is important for the workflow file. The file is saved automatically.
+Do note that proper spacing is important in the workflow `yml` file.
 
 ## Customising the Workflow
 
-Change the file name under `keyboard:` to the name of your json file. You can add additional entries here to build more than one keyboard. Each file name must be prefixed with a dash `-` character.
+Change the file name under `keyboard:` to the name of your json file (`- cradio.json` in the example above). You can add additional json file entries to build more than one keyboard. Each file name must be prefixed with a dash `-` character. The `keymap:` section uses your GitHub username as default with the variable `${{ github.actor }}`. If you used a different keymap name for the json file in the first step, change this section accordingly.
 
 ## Committing the Workflow
 
@@ -106,5 +106,7 @@ Click on `Source Control` in the left column, enter a meaningful commit message,
 Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` repository, and select the `Actions` tab. Here you will find the `Build QMK Firmware` workflow. Selecting the workflow will display its run from the last commit. Selecting that will show its run status. If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
 
 ![workflow7](workflow7.png)
+
+# Next Steps
 
 You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor. Keymaps for any additional keyboards must be retained in json format, and appended to the `keyboard:` matrix list of `build.yml`. Custom source codes can be added into C files (e.g. `source.c`) that are appended into `rules.mk` (e.g. `SRC += source.c`).
