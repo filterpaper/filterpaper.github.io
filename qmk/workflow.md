@@ -8,11 +8,11 @@ Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site. Select 
 
 ![workflow1](workflow1.png)
 
-Customise the keymap according to your preference. Click on the download icon next to `KEYMAP.JSON` to save the layout file in your computer. Rename that file to the name of the keyboard, for example `cradio.json`, and note its location.
+Customise the keymap according to your preference. Click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer. Rename it to your keyboard name, e.g. `cradio.json`, and note its location.
 
 # Create A Repository
 
-Login to your GitHub account, select the `Repositories` tab, and click on `New` on the right to create a new repository. You can name it `qmk_keymap` (or a unique name). Leave the other settings as default and click on `Create repository` at the bottom of the page.
+Login to your GitHub account, select the `Repositories` tab, and click on `New` on the right to create a new repository. You can name it `qmk_keymap` (or a unique name). Leave the other settings as default and click on `Create repository` at the bottom of the page:
 
 ![workflow2](workflow2.png)
 
@@ -32,7 +32,7 @@ Click on the newly created `.github/workflows` folder and select the `New File` 
 
 ![workflow5](workflow5.png)
 
-With the `build.yml` file selected, paste the following workflow content into the editor windnow on the right side:
+With the `build.yml` file selected, paste the following workflow content into the editor window on the right side:
 
 ```yml
 {% raw %}
@@ -107,4 +107,4 @@ Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` reposit
 
 ![workflow7](workflow7.png)
 
-You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor.
+You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor. Keymaps for any additional keyboards must be retained in json format, and appended to the `keyboard:` matrix list of `build.yml`. Custom source codes can be added into C files (e.g. `source.c`) that are appended into `rules.mk` (e.g. `SRC += source.c`).
