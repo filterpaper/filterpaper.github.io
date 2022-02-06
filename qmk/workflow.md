@@ -18,8 +18,8 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 
 * Login to your GitHub account.
 * Select the `Repositories` tab, and click on `New` on the right to create a new repository.
-* You can name it `qmk_keymap` (or anything unique).
-* Leave the other settings as default and click on `Create repository` at the bottom of the page:
+* Use `qmk_keymap` (or anything unique) for the Repository name field.
+* Leave the other settings as default and select `Create repository` at the bottom:
 
 ![workflow2](workflow2.png)
 
@@ -105,25 +105,36 @@ Do note that proper spacing is important in the workflow `yml` file.
 
 ## Customising the Workflow
 
-The matrix `file:` is a list of json files to be built (`- cradio.json` in the example).
-̃* Change this section to the name of your json file. Additional entries (with `-` prefix) can be added here to build more than one keyboard.
-̃* The `user:` section defaults to your GitHub username. Change that line accordingly if you used a different keymap name for the json file in the first step.
+* The matrix `file:` section is a list of files to be built (`- cradio.json` in the example).
+* Change this section to the name of your json file. Additional entries (with `-` prefix) can be added to build multiple keyboards.
+̃* The `user:` section defaults to your GitHub username. Change this section accordingly if you used a different keymap name for the json file in the first step.
 
 ## Committing the Workflow
 
-* Click on `Source Control` in the left column, enter a meaningful commit message.
+* Click on `Source Control` in the left column and enter a meaningful commit message.
 * Click on the `Commit` checkmark above to commit the file directly to your repository:
 
 ![workflow6](workflow6.png)
 
+Committing a change to the repository will automatically trigger build actions in the workflow.
+
 # Review Workflow actions
 
-Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` repository, and select the `Actions` tab. Here you will find the `Build QMK Firmware` workflow. Selecting the workflow will display its run from the last commit. Selecting that will show its run status. If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
+* Return to your [GitHub](https://github.com/) page and the `qmk_keymap` repository.
+* Select the `Actions` tab to display the `Build QMK Firmware` workflow.
+* Select that workflow to display its run from the last commit.
+* If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
 
 ![workflow7](workflow7.png)
 
-They can be downloaded and flashed into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox).
+Download and flashed the firmware file into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox).
 
 # Next Steps
 
-You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor. Keymaps for any additional keyboards must be retained in json format, and appended to the `keyboard:` matrix list of `build.yml`. Custom source codes can be added into C files (e.g. `source.c`) that are appended into `rules.mk` (e.g. `SRC += source.c`).
+You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor. Additional keyboard keymaps must be retained in json format and appended to the `file:` matrix list in `build.yml`. Custom source codes can be added into C files (e.g. `source.c`) that are appended into `rules.mk` (e.g. `SRC += source.c`).
+
+# References
+
+* [QMK Userspace guide](https://docs.qmk.fm/#/feature_userspace)
+* [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor
+* [GitHub Actions guide](https://docs.github.com/en/actions/learn-github-actions)
