@@ -1,6 +1,6 @@
 # QMK with GitHub Workflow
 
-Setting up a [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) can be onerous. Building locally with a `git` clone of a fork and `gcc` tools will also consume a lot of disk space. This is a setup guide for an Action workflow build environment that runs entirely on GitHub. It uses a standalone [Userspace](userspace.md) repository that will build QMK firmware in a container. To begin, you will need an account on [GitHub](https://github.com/).
+Setting up a [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) can be onerous. Building locally with a `git` clone of a fork and `gcc` tools will also consume a lot of disk space. This is a setup guide for an Action workflow build environment that runs entirely on GitHub. It uses a standalone [Userspace](userspace.md) repository that will compile QMK firmware in a container. To begin, you will need an account on [GitHub](https://github.com/).
 
 
 # Create a Keymap JSON
