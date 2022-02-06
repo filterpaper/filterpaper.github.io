@@ -35,7 +35,7 @@ Setting up a [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started
 ![workflow3](workflow3.png)
 
 
-# Create a Workflow file
+# Create the Workflow
 
 Back in the `qmk_keymap` repository page, press the period (`.`) key. The [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based VSCode editor will be loaded. This interface is where you can edit and commit code directly to GitHub.
 
@@ -122,7 +122,7 @@ jobs:
 
 Committing a change to the repository will automatically trigger the workflow to build every json file listed in the `file:` section.
 
-# Review Workflow actions
+# Review Actions
 
 * Return to your [GitHub](https://github.com/) page and the `qmk_keymap` repository.
 * Select the `Actions` tab to display the `Build QMK Firmware` workflow.
