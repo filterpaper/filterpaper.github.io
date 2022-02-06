@@ -35,6 +35,7 @@ Click on the newly created `.github/workflows` folder and select the `New File` 
 With the `build.yml` file selected, paste the following workflow content into the editor windnow on the right side:
 
 ```yml
+{% raw %}
 name: Build QMK firmware
 on: [push, workflow_dispatch]
 
@@ -85,6 +86,7 @@ jobs:
           *.bin
           *.uf2
       continue-on-error: true
+{% endraw %}
 ```
 
 Do note that proper spacing is important for the workflow file. The file is saved automatically.
