@@ -23,6 +23,8 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 
 ![workflow2](workflow2.png)
 
+## Upload Keyboard JSON
+
 * In the `Quick setup` page that follows, select `uploading an existing file`.
 * Find the json file from the previous step (`cradio.json` in the example) and drag it into the browser page to upload.
 * Write a meaningful commit message below and select `Commit changes` at the bottom of the page:
@@ -34,9 +36,11 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 Back in the `qmk_keymap` repository page, press the period (`.`) key. The [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based VSCode editor will be loaded. This interface is where you can edit and commit code directly to GitHub.
 
 * In the left `Explorer` section, click on the `New Folder` icon to create a folder named `.github/workflows` (note the `.` prefix). Press enter to complete the action:
+
 ![workflow4](workflow4.png)
 
 * Click on the new `.github/workflows` folder and select the `New File` icon. Create a file named `build.yml` and press enter to complete:
+
 ![workflow5](workflow5.png)
 
 * With the `build.yml` file selected, paste the following workflow content into the editor window on the right side:
