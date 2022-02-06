@@ -11,23 +11,24 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 ![workflow1](workflow1.png)
 
 * Customise the key map according to your preference.
-* When you're done, click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer.
+* Select download icon next to `KEYMAP.JSON` to save the layout file locally.
 * Rename the json to your keyboard name, e.g. `cradio.json`, and note its location.
 
 # Create a Repository
 
 * Login to your GitHub account.
-* Select the `Repositories` tab, and click on `New` on the right to create a new repository.
-* Use `qmk_keymap` (or anything unique) for the Repository name field.
-* Leave the other settings as default and select `Create repository` at the bottom:
+* Select the `Repositories` tab, and click on `New` on the right.
+* Use `qmk_keymap` (or anything unique) as the repository name.
+* Leave the other settings as default and select `Create repository`:
 
 ![workflow2](workflow2.png)
 
 ## Upload Keyboard JSON
 
 * In the `Quick setup` page that follows, select `uploading an existing file`.
-* Find the json file from the previous step (`cradio.json` in the example) and drag it into the browser page to upload.
-* Write a meaningful commit message below and select `Commit changes` at the bottom of the page:
+* Locale the json file from the previous step (`cradio.json`).
+* Drag that file into the browser page to upload.
+* Write a meaningful commit message and select `Commit changes`:
 
 ![workflow3](workflow3.png)
 
@@ -73,7 +74,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: qmk/qmk_firmware
-        ref: develop
+# Uncomment the following for develop branch
+#        ref: develop
         fetch-depth: 1
         persist-credentials: false
         submodules: recursive
@@ -107,11 +109,11 @@ Do note that proper spacing is important in the workflow `yml` file.
 
 * The matrix `file:` section is a list of files to be built (`- cradio.json` in the example).
 * Change this section to the name of your json file. Additional entries (with `-` prefix) can be added to build multiple keyboards.
-̃* The `user:` section defaults to your GitHub username. Change this section accordingly if you used a different keymap name for the json file in the first step.
+* GitHub username is default for `user:`. Change this accordingly if a different keymap name was used in [QMK Configurator](https://config.qmk.fm/#/).
 
 ## Committing the Workflow
 
-* Click on `Source Control` in the left column and enter a meaningful commit message.
+* Select `Source Control` on the left column and enter a meaningful commit message.
 * Click on the `Commit` checkmark above to commit the file directly to your repository:
 
 ![workflow6](workflow6.png)
@@ -127,7 +129,7 @@ Committing a change to the repository will automatically trigger build actions i
 
 ![workflow7](workflow7.png)
 
-Download and flashed the firmware file into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox).
+Download and flash the firmware file into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox).
 
 # Next Steps
 

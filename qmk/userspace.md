@@ -277,7 +277,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: qmk/qmk_firmware
-        ref: develop
+# Uncomment the following for develop branch
+#        ref: develop
         fetch-depth: 1
         persist-credentials: false
         submodules: recursive
