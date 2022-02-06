@@ -25,13 +25,9 @@ In the `Quick setup` page that follows, select `uploading an existing file`. Fin
 Back in the `qmk_keymap` repository page, press the period (`.`) key. The [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based VSCode editor will be loaded. This interface is where you can edit and commit code directly to GitHub.
 
 1. In the left `Explorer` section, click on the `New Folder` icon to create a folder named `.github/workflows` (note the `.` prefix). Press enter to complete the action:
-
 ![workflow4](workflow4.png)
-
 2. Click on the new `.github/workflows` folder and select the `New File` icon. Create a file named `build.yml` and press enter to complete:
-
 ![workflow5](workflow5.png)
-
 3. With the `build.yml` file selected, paste the following workflow content into the editor window on the right side:
 
 ```yml
@@ -94,7 +90,7 @@ Do note that proper spacing is important in the workflow `yml` file.
 
 ## Customising the Workflow
 
-The matrix `file:` is a list of json files to be built (`- cradio.json` in the example). Change this section to the name of your json file. Additional entries (with `-` prefix) can be added here to build more than one keyboard. The `user:` section defaults to your GitHub username with the variable `- ${{ github.actor }}`. If you used a different keymap name for the json file in the first step, change that line accordingly.
+The matrix `file:` is a list of json files to be built (`- cradio.json` in the example). Change this section to the name of your json file. Additional entries (with `-` prefix) can be added here to build more than one keyboard. The `user:` section defaults to your GitHub username. Change that line accordingly if you used a different keymap name for the json file in the first step.
 
 ## Committing the Workflow
 
