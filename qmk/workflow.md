@@ -1,6 +1,6 @@
 # QMK with GitHub Workflow
 
-Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can consume a lot of disk disk disk space. This is an alternative build environment that can be setup and run entirely on GitHub using Action workflow on a single userspace repository. To begin, you will need an account on [GitHub](https://github.com/).
+Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can consume a lot of disk space. This is an alternative build environment that can be setup to run entirely on GitHub using Action workflow. It uses a standalone [Userspace](userspace.md) repository workflow that will build QMK firmware with a `git` clone in a container. To begin, you will need an account on [GitHub](https://github.com/).
 
 # Create a Keymap
 
