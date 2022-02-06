@@ -137,11 +137,11 @@ Download and flash the firmware file into your keyboard using [QMK Toolbox](http
 # Next Steps
 
 You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor:
-̃
+
 * Create a `config.h` file for QMK variables and definitions.
 * Create a `rules.mk` to enable and disable QMK features.
 * Create a `source.c` file for your customised code.
-  * Add `SRC += source.c` to `rules.mk` to build this file.
+  * Add `SRC += source.c` to `rules.mk` to build this source.
 
 Additional keymaps for other keyboards must be retained in json format and appended to the `file:` matrix list in `build.yml`.
 
