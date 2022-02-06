@@ -251,27 +251,33 @@ When setup in this manner, `git pull` inside `~/qmk_firmware/` will update direc
 
 ```yml
 {% raw %}
-name: Build userspace
+
+name: Build QMK firmware
 on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: qmkfm/qmk_cli
+    container: qmkfm/base_container
     strategy:
       fail-fast: false
       matrix:
-        keyboard:
-        - planck
-        - crkbd
-        keymap:
+# Start of build matrix
+# List the keyboard file names here
+        file:
+        - cradio.json
+# List the username here
+        user:
         - ${{ github.actor }}
+# End of build matrix
 
     steps:
+
     - name: Checkout QMK
       uses: actions/checkout@v2
       with:
         repository: qmk/qmk_firmware
+        ref: develop
         fetch-depth: 1
         persist-credentials: false
         submodules: recursive
@@ -279,21 +285,18 @@ jobs:
     - name: Checkout userspace
       uses: actions/checkout@v2
       with:
-        path: users/${{ matrix.keymap }}
+        path: users/${{ matrix.user }}
         fetch-depth: 1
         persist-credentials: false
 
     - name: Build firmware
-      run: |
-        qmk compile "users/${{ matrix.keymap }}/keymaps/${{ matrix.keyboard }}.json"
-        OUTPUT=$(echo "${{ matrix.keyboard }}" | sed 's#/#_#g')_${{ matrix.keymap }}
-        echo "::set-output name=artifact-name::${OUTPUT}"
+      run: qmk compile "users/${{ matrix.user }}/${{ matrix.file }}"
 
     - name: Archive firmware
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ steps.build.outputs.artifact-name }}_firmware
-        retention-days: 2
+        name: ${{ matrix.file }}_${{ matrix.user }}
+        retention-days: 5
         path: |
           *.hex
           *.bin
@@ -302,7 +305,7 @@ jobs:
 {% endraw %}
 ```
 
-The `matrix.keyboard:` list are names that matches the json files (`planck` and `crkbd` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
+The `matrix.file:` is a list of json files to be built (`planck.json` and `crkbd.json` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
