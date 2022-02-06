@@ -2,7 +2,8 @@
 
 Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can consume a lot of disk space. This is an alternative build environment that can be setup to run entirely on GitHub using Action workflow. It uses a standalone [Userspace](userspace.md) repository and a workflow that will build QMK firmware in a container. To begin, you will need an account on [GitHub](https://github.com/).
 
-# Create a Keymap
+
+# Create a Keymap JSON
 
 * Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site.
 * Select your keyboard from the drop-down list (and choose a layout if required).
@@ -14,6 +15,7 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 * Select download icon next to `KEYMAP.JSON` to save the layout file locally.
 * Rename the json to your keyboard name, e.g. `cradio.json`, and note its location.
 
+
 # Create a Repository
 
 * Login to your GitHub account.
@@ -23,7 +25,7 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 
 ![workflow2](workflow2.png)
 
-## Upload Keyboard JSON
+## Upload the Keymap JSON
 
 * In the `Quick setup` page that follows, select `uploading an existing file`.
 * Locale the json file from the previous step (`cradio.json`).
@@ -31,6 +33,7 @@ Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can c
 * Write a meaningful commit message and select `Commit changes`:
 
 ![workflow3](workflow3.png)
+
 
 # Create a Workflow file
 
@@ -106,8 +109,8 @@ Do note that proper spacing is important in the workflow `yml` file.
 
 ## Customising the Workflow
 
-* The matrix `file:` section is a list of files to be built (`cradio.json` in the example).
-* Change this section to the name of your json file. Additional entries (with `-` prefix) can be added to build multiple keyboards.
+* The matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
+* Change this to your json file name. Additional files (with `-` prefix) can be appended for multiple keyboards.
 * GitHub username is default for `user:`. Change this accordingly if a different keymap name was used in [QMK Configurator](https://config.qmk.fm/#/).
 
 ## Committing the Workflow
@@ -124,15 +127,24 @@ Committing a change to the repository will automatically trigger build actions i
 * Return to your [GitHub](https://github.com/) page and the `qmk_keymap` repository.
 * Select the `Actions` tab to display the `Build QMK Firmware` workflow.
 * Select that workflow to display its run from the last commit.
-* If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
+* Successfully compiled firmware is found under the `Artifacts` section:
 
 ![workflow7](workflow7.png)
 
-Download and flash the firmware file into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox).
+Download and flash the firmware file into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox). If there are build errors, review the job log for details.
+
 
 # Next Steps
 
-You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor. Additional keyboard keymaps must be retained in json format and appended to the `file:` matrix list in `build.yml`. Custom source codes can be added into C files (e.g. `source.c`) that are appended into `rules.mk` (e.g. `SRC += source.c`).
+You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) editor:
+̃
+* Create a `config.h` file for QMK variables and definitions.
+* Create a `rules.mk` to enable and disable QMK features.
+* Create a `source.c` file for your customised code.
+  * Add `SRC += source.c` to `rules.mk` to build this file.
+
+Additional keymaps for other keyboards must be retained in json format and appended to the `file:` matrix list in `build.yml`.
+
 
 # References
 
