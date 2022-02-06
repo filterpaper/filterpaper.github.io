@@ -251,7 +251,6 @@ When setup in this manner, `git pull` inside `~/qmk_firmware/` will update direc
 
 ```yml
 {% raw %}
-
 name: Build QMK firmware
 on: [push, workflow_dispatch]
 
