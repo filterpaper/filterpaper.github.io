@@ -109,8 +109,8 @@ jobs:
 
 ## Customising the Workflow
 
-* The workflow matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
-* Change this to your json file name. Additional files (with `-` prefix) can be appended for multiple keyboards.
+* Matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
+* Use your json file name. Additional files (with `-` prefix) can be appended for multiple keyboards.
 * GitHub username is default for `user:`. Change this accordingly if a different keymap name was used in [QMK Configurator](https://config.qmk.fm/#/).
 
 ## Committing the Workflow
