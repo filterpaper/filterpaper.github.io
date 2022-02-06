@@ -48,7 +48,6 @@ Back in the `qmk_keymap` repository page, press the period (`.`) key. The [githu
 
 ```yml
 {% raw %}
-
 name: Build QMK firmware
 on: [push, workflow_dispatch]
 
@@ -107,7 +106,7 @@ Do note that proper spacing is important in the workflow `yml` file.
 
 ## Customising the Workflow
 
-* The matrix `file:` section is a list of files to be built (`- cradio.json` in the example).
+* The matrix `file:` section is a list of files to be built (`cradio.json` in the example).
 * Change this section to the name of your json file. Additional entries (with `-` prefix) can be added to build multiple keyboards.
 * GitHub username is default for `user:`. Change this accordingly if a different keymap name was used in [QMK Configurator](https://config.qmk.fm/#/).
 
