@@ -1,14 +1,14 @@
-# Building QMK with GitHub Action Workflow
+# QMK with GitHub Workflow
 
-QMK firmware can be compiled entirely on GitHub using Action workflow, without any tools installed locally. To begin, you will need a GitHub account setup.
+Building QMK firmware locally with a `git` clone of a fork and `gcc` tools can consume a lot of disk disk disk space. This is an alternative build environment that can be setup and run entirely on GitHub using Action workflow on a single userspace repository. To begin, you will need an account on [GitHub](https://github.com/).
 
 # Create a Keymap
 
-Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site. Select your keyboard from the drop-down list, and layout. Use your GitHub username for the `Keymap Name` field, e.g.:
+Start by visiting the [QMK Configurator](https://config.qmk.fm/#/) site. Select your keyboard from the drop-down list (and choose a layout if required). Use your GitHub username for the `Keymap Name` field, e.g.:
 
 ![workflow1](workflow1.png)
 
-Customise the keymap according to your preference. Click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer. Rename it to your keyboard name, e.g. `cradio.json`, and note its location.
+Customise the key map according to your preference. When you're done, click on the download icon next to `KEYMAP.JSON` to save the layout file into your computer. Rename the json to your keyboard name, e.g. `cradio.json`, and note its location.
 
 # Create a Repository
 
@@ -47,10 +47,10 @@ jobs:
       fail-fast: false
       matrix:
 # Start of build matrix
-# List the keyboard file names here
+# List keyboard file names here
         keyboard:
         - cradio.json
-# List the username here
+# List username here
         keymap:
         - ${{ github.actor }}
 # End of build matrix
@@ -61,7 +61,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: qmk/qmk_firmware
-        ref: develop
+# Uncomment the following for develop branch
+#        ref: develop
         fetch-depth: 1
         persist-credentials: false
         submodules: recursive
@@ -106,6 +107,8 @@ Click on `Source Control` in the left column, enter a meaningful commit message,
 Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` repository, and select the `Actions` tab. Here you will find the `Build QMK Firmware` workflow. Selecting the workflow will display its run from the last commit. Selecting that will show its run status. If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
 
 ![workflow7](workflow7.png)
+
+They can be downloaded and flashed into your keyboard using [QMK Toolbox](https://docs.qmk.fm/#/newbs_flashing?id=flashing-your-keyboard-with-qmk-toolbox).
 
 # Next Steps
 
