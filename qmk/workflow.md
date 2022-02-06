@@ -103,6 +103,6 @@ Click on `Source Control` in the left column, enter a meaningful commit message,
 
 Return to your [GitHub](https://github.com/) page, find the `qmk_keymap` repository, and select the `Actions` tab. Here you will find the `Build QMK Firmware` workflow. Selecting the workflow will display its run from the last commit. Selecting that will show its run status. If the committed files were compiled successfully, you will find the compiled firmware ready for download under the `Artifacts` section:
 
-![workflow7](workflow7png)
+![workflow7](workflow7.png)
 
 You can proceed to customise QMK using the [Userspace guide](https://docs.qmk.fm/#/feature_userspace) with the github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) web-based editor.
