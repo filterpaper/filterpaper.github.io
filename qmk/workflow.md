@@ -51,7 +51,7 @@ jobs:
         - cradio.json
 # List the username here
         keymap:
-        - ${ { github.actor } }
+        - ${{ github.actor }}
 # End of build matrix
 
     steps:
