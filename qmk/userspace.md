@@ -232,9 +232,19 @@ qmk flash ~/qmk_firmware/users/newbie/planck.json
 ```
 The added advantage of using wrapper is ability to share layouts with different keyboards.
 
-# Caveat / Limitations
+# Limitations
 
-`config.h` is the only header file included with the keymap built from a json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus custom keycodes that starts at `SAFE_RANGE` cannot be defined as an enumeration data type in `config.h`. Manually defining safe custom keycode range is the only workaround. Manually expanding the json file using `rules.mk` was also proposed in [PR #15480](https://github.com/qmk/qmk_firmware/pull/15480).
+`config.h` is the only header file built alongside `keymap.c` generated from the json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus the use of `SAFE_RANGE` to enumerate custom keycodes is not supported inside `config.h`.
+
+## Workarounds
+* Manually expanding the json file using `rules.mk` proposed in [PR #15480](https://github.com/qmk/qmk_firmware/pull/15480).
+* Manually assign safe custom keycode range by counting down from a high value:
+```c
+#define MY_SAFE_RANGE 65518
+#define MY_KEYCODE1 MY_SAFE_RANGE-1
+#define MY_KEYCODE2 MY_SAFE_RANGE-2
+```
+
 
 # GitHub Integration
 
@@ -260,7 +270,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-# List keymap json files to build
+# List of keymap json files to build
         file:
         - planck.json
         - crkbd.json
@@ -302,8 +312,10 @@ jobs:
 {% endraw %}
 The `matrix.file:` is a list of json files to be built (`planck.json` and `crkbd.json` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
+
 # Summary
 Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
+
 
 # Links
 [QMK cheatsheet](https://jayliu50.github.io/qmk-cheatsheet/)
