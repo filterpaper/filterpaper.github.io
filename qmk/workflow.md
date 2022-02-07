@@ -60,14 +60,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-# Start of build matrix
-# List the keyboard file names here
+# List keymap json files to build
         file:
         - cradio.json
-# List the username here
-        user:
-        - ${{ github.actor }}
-# End of build matrix
+# End of json file list
 
     steps:
 
@@ -84,17 +80,17 @@ jobs:
     - name: Checkout userspace
       uses: actions/checkout@v2
       with:
-        path: users/${{ matrix.user }}
+        path: users/${{ github.actor }}
         fetch-depth: 1
         persist-credentials: false
 
     - name: Build firmware
-      run: qmk compile "users/${{ matrix.user }}/${{ matrix.file }}"
+      run: qmk compile "users/${{ github.actor }}/${{ matrix.file }}"
 
     - name: Archive firmware
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.file }}_${{ matrix.user }}
+        name: ${{ matrix.file }}_${{ github.actor }}
         retention-days: 5
         path: |
           *.hex
@@ -109,7 +105,6 @@ jobs:
 
 * Matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
 * Use your json file name. Additional files (with `-` prefix) can be appended for multiple keyboards.
-* GitHub username is default for `user:`. Change this accordingly if a different keymap name was used in [QMK Configurator](https://config.qmk.fm/#/).
 
 ## Committing the Workflow
 

@@ -248,9 +248,8 @@ When setup in this manner, `git pull` inside `~/qmk_firmware/` will update direc
 
 ## Building with GitHub Actions
 [GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml` with the following content:
-
-```yml
 {% raw %}
+```yml
 name: Build QMK firmware
 on: [push, workflow_dispatch]
 
@@ -261,14 +260,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-# Start of build matrix
-# List the keyboard file names here
+# List keymap json files to build
         file:
-        - cradio.json
-# List the username here
-        user:
-        - ${{ github.actor }}
-# End of build matrix
+        - planck.json
+        - crkbd.json
+# End of json file list
 
     steps:
 
@@ -285,26 +281,25 @@ jobs:
     - name: Checkout userspace
       uses: actions/checkout@v2
       with:
-        path: users/${{ matrix.user }}
+        path: users/${{ github.actor }}
         fetch-depth: 1
         persist-credentials: false
 
     - name: Build firmware
-      run: qmk compile "users/${{ matrix.user }}/${{ matrix.file }}"
+      run: qmk compile "users/${{ github.actor }}/${{ matrix.file }}"
 
     - name: Archive firmware
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.file }}_${{ matrix.user }}
+        name: ${{ matrix.file }}_${{ github.actor }}
         retention-days: 5
         path: |
           *.hex
           *.bin
           *.uf2
       continue-on-error: true
-{% endraw %}
 ```
-
+{% endraw %}
 The `matrix.file:` is a list of json files to be built (`planck.json` and `crkbd.json` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
 # Summary
