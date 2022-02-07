@@ -60,7 +60,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-# List keymap json files to build
+# List of keymap json files to build
         file:
         - cradio.json
 # End of json file list
@@ -142,6 +142,5 @@ Additional keymaps for other keyboards must be retained in json format and appen
 
 # References
 
-* [QMK Userspace guide](https://docs.qmk.fm/#/feature_userspace)
-* [github.dev editor](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor)
+* [QMK Firmware Documentation](https://docs.qmk.fm/#/)
 * [GitHub Actions guide](https://docs.github.com/en/actions/learn-github-actions)
