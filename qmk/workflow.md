@@ -103,8 +103,9 @@ jobs:
 
 ## Customising the Workflow
 
-* Matrix `file:` section is a list of keymap files to be built (`cradio.json` in the example).
-* Use your json file name. Additional files (with `-` prefix) can be appended for multiple keyboards.
+* Matrix `file:` section is a list of keymap files to be built.
+* Change `cradio.json` keymap to your json file name.
+* Additional files (with `-` prefix) can be appended here for multiple keyboards.
 
 ## Committing the Workflow
 
