@@ -28,7 +28,7 @@ Setting up a local [QMK build environment](https://docs.qmk.fm/#/newbs_getting_s
 ## Upload the Keymap JSON
 
 * In the `Quick setup` page that follows, select `uploading an existing file`.
-* Locale the json file (e.g. `cradio.json`) from the previous step.
+* Locate the json file (e.g. `cradio.json`) from the previous step.
 * Drag that file into the browser page to upload.
 * Write a meaningful commit message and select `Commit changes`:
 
