@@ -48,9 +48,8 @@ Back in the `qmk_keymap` repository page, press the period (`.`) key. The [githu
 ![workflow5](workflow5.png)
 
 * With the `build.yml` file selected, paste the following workflow content into the editor window on the right:
-
-```yml
 {% raw %}
+```yml
 name: Build QMK firmware
 on: [push, workflow_dispatch]
 
@@ -102,9 +101,8 @@ jobs:
           *.bin
           *.uf2
       continue-on-error: true
-{% endraw %}
 ```
-
+{% endraw %}
 (Do note that the `build.yml` workflow file requires proper indentation on every line.)
 
 ## Customising the Workflow
