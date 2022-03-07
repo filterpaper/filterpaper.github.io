@@ -281,7 +281,7 @@ IDLE_FRAMES is 5, and `current_frame` increment is modulo of it. So that operati
 ```c
 current_frame = (current_frame + 1 > IDLE_FRAMES - 1) ? 0 : current_frame + 1;
 ```
-## Xorshift pseudo random number generator
+## Pseudo random number generator
 The C library `rand()` is huge. If simple random numbers is required for insensitive use like animation or lighting, Bob Jenkin's small PRNG below can save about 200 bytes:
 ```c
 #define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
@@ -297,4 +297,5 @@ uint8_t jsf8(void) {
 Add that code function to source or `keymap.c` file and call `jsf8()` instead of `rand()`.
 
 ## Quote
-"It is said that programmers should write code for other programmers to understand and leave compilers to write for code for machines."
+"Programs must be written for people to read, and only incidentally for machines to execute."
+― Harold Abelson, Structure and Interpretation of Computer Programs
