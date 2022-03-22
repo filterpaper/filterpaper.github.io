@@ -19,7 +19,7 @@ void render_status(void) {
 	render_layer_state();
 }
 ```
-However `oled_set_cursor()` is costly in bytes. If it is used to just skip a few lines, that can replaced by rendering carriage return inside the initial `oled_write_P()`, saving 34 bytes:
+However `oled_set_cursor()` is costly in bytes. If it is used to just skip lines, that can replaced by rendering carriage return inside the initial `oled_write_P()`, saving 34 bytes:
 ```c
 static void render_logo(void) {
 	oled_write_P(PSTR("corne\n\n"), false);
@@ -35,7 +35,7 @@ void render_status(void) {
 }
 ```
 ## Avoid multiple functions within "if" statements
-The first `if` statement evaluates two conditions that invokes two external function call. Machine codes generated can be space consuming:
+The first `if` statement evaluates two conditions that invokes two external function call:
 ```c
 if (get_mods() & MOD_MASK_SHIFT || host_keyboard_led_state().caps_lock) { render_luna_bark(); }
 else if (get_mods() & MOD_MASK_CAG) { render_luna_sneak(); }
@@ -124,7 +124,7 @@ static void animate_cat(void) {
 	}
 }
 ```
-## Decreasing "for" Loop
+## Decrementing "for" Loop
 The following is modifier key lighting code, using a typical `for` loop with incrementing counter:
 ```c
 if (get_mods() & MOD_MASK_CSAG) {
@@ -146,7 +146,7 @@ if (get_mods() & MOD_MASK_CSAG) {
 }
 ```
 ## Use "if" instead of "switch" for non-sequential
-The `switch` statement is easy to read for multi-choice condition, but it can also be space consuming when matched cases are not sequential. In the following "capsword" function example, the first switch statement filters for modifier and layer tap keycodes to apply a bitmask:
+The `switch` statement is an easy to read for multi-choice condition, but it can also be space consuming when matched cases are not sequential. In the following "capsword" function example, the first switch statement filters for modifier and layer tap keycodes to apply a bitmask:
 ```c
 static void process_caps_word(uint16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
@@ -166,7 +166,7 @@ static void process_caps_word(uint16_t keycode, keyrecord_t const *record) {
 	}
 }
 ```
-That `switch` statement is comparing mod and layer tap cases that are not sequential. Replacing that with a multi-conditional `if` statement saved 6 bytes:
+That `switch` statement is comparing mod and layer tap cases that are not sequential. Replacing that with a multi-conditional `if` statement saved 6 bytes at the expense of readability:
 ```c
 static void process_caps_word(uint16_t keycode, keyrecord_t const *record) {
 	// Get base key code of mod or layer tap with bitmask
@@ -236,7 +236,7 @@ void render_bongocat(void) {
 	}
 }
 ```
-External function `timer_elapsed32(tap_timer)` is called multiple times to evaluate elapsed time. Replacing all 3 with an integer `keystroke` reduced firmware size by 80 bytes:
+External function `timer_elapsed32(tap_timer)` is invoked multiple times to evaluate elapsed time. Replacing all 3 with an integer `keystroke` reduced firmware size by 80 bytes:
 ```c
 void render_bongocat(void) {
 	// WPM triggered typing timer
