@@ -1,4 +1,4 @@
-# Saving Bytes with QMK
+# Saving Bytes in QMK
 
 My CRKBD firmware went above its size limit by 100 bytes at one point, even with `LTO_ENABLE = yes`. Documented below are various ways to code QMK with for better space efficiency if you need to bring the firmware size down by just a bit to fit inside the MCU.
 

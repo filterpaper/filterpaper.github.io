@@ -11,26 +11,24 @@
 ## Step 1: Solder Sockets onto PCB
 ![1_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/1_socket.png)
 
-Cut sockets with a flush cutter into rows of 12 (if they are not pre-cut). Tape and solder them onto the correct MCU pin columns.
+Cut sockets with a flush cutter into rows of 12 (if they are not pre-cut). Tape and solder them on the correct MCU pin columns.
 
 ## Step 2: Cover Sockets with tape
 ![2_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/2_socket.png)
 
-Cover both rows with tape to protect against solder flow from fusing with sockets. Heat resistance Kapton tape is preferred but any regular ones will work as well.
+Cover both sockets with tape to protect solder flow from fusing with sockets. Heat-resistant Kapton tape is preferred but any regular ones will work as well.
 
 ## Step 3: Insert Mill-Max pins
 ![3_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/3_socket.png)
 
-Hold pins with needle-nose pliers to pierce and insert them into the sockets. Mill-Max pins will "click" into the 315-43-112-41-003000 low profile sockets. Make sure all pins are all fully inserted and even:
+Use needle-nose pliers to hold and pierce connector pins into the sockets. Mill-Max pins will "click" into the 315-43-112-41-003000 low profile sockets. Make sure all pins are all fully inserted and even:
 
 ![4_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/4_socket.png)
 
 ## Step 4: Solder the MCU
 ![5_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/5_socket.png)
 
-> ***Double (and triple) check for proper orientation of the microcontroller pins before proceeding***
-
-Place the microcontroller over the pins, and tape it down flat. Correctly inserted pins will only protrude a bit out the controller holes. Solder each pin carefully:
+***Double (and triple) check for proper orientation of the microcontroller before proceeding***. Place controller over the pins and tape it down flat. Correctly inserted pins will only protrude a bit out the controller holes. Solder each pin carefully:
 
 ![6_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/6_socket.png)
 
