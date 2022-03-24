@@ -28,7 +28,7 @@ Use needle-nose pliers to hold and pierce connector pins into the sockets. Mill-
 ## Step 4: Solder the MCU
 ![5_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/5_socket.png)
 
-***Double (and triple) check for proper orientation of the microcontroller before proceeding***. Place controller over the pins and tape it down flat. Correctly inserted pins will only protrude a bit out the controller holes. Solder each pin carefully:
+(***Double (and triple) check for microcontroller pin orientation before proceeding. Do not rely on face up or down assumption***). Place controller over the pins and tape it down flat. Correctly inserted pins will only protrude a bit out the controller holes. Solder each pin carefully:
 
 ![6_socket](https://github.com/filterpaper/filterpaper.github.io/raw/main/images/6_socket.png)
 
