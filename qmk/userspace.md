@@ -273,7 +273,7 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: qmkfm/base_container
+    container: qmkfm/qmk_cli
     strategy:
       fail-fast: false
       matrix:
@@ -286,21 +286,17 @@ jobs:
     steps:
 
     - name: Checkout QMK
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: qmk/qmk_firmware
 # Uncomment the following for develop branch
 #        ref: develop
-        fetch-depth: 1
-        persist-credentials: false
-        submodules: recursive
+        submodules: true
 
     - name: Checkout userspace
       uses: actions/checkout@v2
       with:
         path: users/${{ github.actor }}
-        fetch-depth: 1
-        persist-credentials: false
 
     - name: Build firmware
       run: qmk compile "users/${{ github.actor }}/${{ matrix.file }}"
