@@ -234,9 +234,10 @@ The added advantage of using wrapper is ability to share layouts with different 
 
 # Limitations
 
+## Custom Keycode Safe Range
 `config.h` is the only header file built alongside `keymap.c` generated from the json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus the use of `SAFE_RANGE` to enumerate custom keycodes is not supported inside `config.h`.
 
-## Workarounds
+### Workaround
 * Manually expanding the json file using `rules.mk` proposed in [PR #15480](https://github.com/qmk/qmk_firmware/pull/15480).
 * Manually assign safe custom keycode range by counting down from a high value:
 ```c
@@ -244,6 +245,12 @@ The added advantage of using wrapper is ability to share layouts with different 
 #define MY_KEYCODE1 MY_SAFE_RANGE-1
 #define MY_KEYCODE2 MY_SAFE_RANGE-2
 ```
+
+## Language Specific Keycode
+Likewise, the use of [language-specific keycode](https://docs.qmk.fm/#/reference_keymap_extras) header files will lead to compile errors because those header files will include `"keymap.h"` that will lead to compile time conflicts.
+
+### Workaround
+Make a copy of the [language keymap](https://github.com/qmk/qmk_firmware/tree/master/quantum/keymap_extras) into the userspace folder, remove the `#include "keymap.h"` line, and include this file instead.
 
 
 # GitHub Integration
