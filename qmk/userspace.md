@@ -238,12 +238,18 @@ The added advantage of using wrapper is ability to share layouts with different 
 `config.h` is the only header file built alongside `keymap.c` generated from the json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus the use of `SAFE_RANGE` to enumerate custom keycodes is not supported inside `config.h`.
 
 ### Workaround
-* Manually expanding the json file using `rules.mk` proposed in [PR #15480](https://github.com/qmk/qmk_firmware/pull/15480).
-* Manually assign safe custom keycode range by counting down from a high value:
+* Use `#include "quantum/keycodes.h"` for `QK_USER`
+* Block op-code from assembly use
+
 ```c
-#define MY_SAFE_RANGE 65518
-#define MY_KEYCODE1 MY_SAFE_RANGE-1
-#define MY_KEYCODE2 MY_SAFE_RANGE-2
+#include "quantum/keycodes.h"
+
+#ifndef __ASSEMBLER__
+enum custom_keycode {
+    MY_KEYCODE1 = QK_USER,
+    MY_KEYCODE2
+};
+#endif
 ```
 
 ## Language Specific Keycode
@@ -284,6 +290,8 @@ jobs:
 # End of json file list
 
     steps:
+    - name: Disable git safe directory checks
+      run : git config --global --add safe.directory '*'
 
     - name: Checkout QMK
       uses: actions/checkout@v3
