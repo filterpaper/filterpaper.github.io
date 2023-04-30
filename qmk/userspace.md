@@ -26,7 +26,7 @@ Building a firmware is as simple as running `qmk compile` on that .json file:
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
-If everything goes well, it will build a firmware with default settings using your custom key layout. You may also run `qmk flash` instead on the .json file for QMK to follow with flashing the keyboard after a successful build.
+If everything goes smoothly, it will build a firmware with default settings using your custom key layout. You can also run `qmk flash` instead on the .json file to compile and follow with flashing the output.
 
 
 # Customising the firmware
@@ -37,7 +37,7 @@ Hardware feature and QMK variables are placed in `rules.mk` and `config.h`. Both
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead of `keymap.c`, custom programming codes should be saved in `<name>.c` like:
+Instead of `keymap.c`, custom source codes should be saved into `<name>.c` like:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
@@ -172,7 +172,7 @@ qmk flash ~/qmk_firmware/users/newbie/crkbd.json
 ```
 
 # Advance wrapper layout
-Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to power users that prefers editing layouts in `keymap.c` text format. Key map wrapper can be adapted to use json file.
+Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to a power user who prefers editing layouts in `keymap.c` text format. Key map wrapper can be adapted to use json file.
 ## planck.json
 Instead of exporting from the Configurator, create a `planck.json` file with *macro* names that make sense for each layer:
 ```json
@@ -180,7 +180,7 @@ Instead of exporting from the Configurator, create a `planck.json` file with *ma
     "author": "",
     "documentation": "Wrapper based keymap",
     "keyboard": "planck/rev6",
-    "keymap": "filterpaper",
+    "keymap": "newbie",
     "layers": [
         [ "BASE" ],
         [ "LOWER" ],
@@ -196,6 +196,8 @@ Instead of exporting from the Configurator, create a `planck.json` file with *ma
 Create a `wrappers.h` file to map those macro names to actual key layout (like a typical `keymap.c`):
 ```
 #pragma once
+#include "quantum/keycodes.h"
+
 #define LAYOUT_wrapper_ortho_4x12(...) LAYOUT_ortho_4x12(__VA_ARGS__)
 
 // QWERTY
@@ -226,7 +228,13 @@ _______, KC_F11,  KC_F12,  _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP,
 _______, _______, _______, _______, _______, _______, _______, KC_INS,  KC_DEL,  _______, _______, _______, \
 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ```
-Add the line `#include "wrappers.h"` into `config.h`. The `qmk` compile or flash process will combine everything into the firmware:
+Add the the following line into `config.h`: 
+```
+#ifndef __ASSEMBLER__ // Guard against use with non-C files
+#    include "wrappers.h"
+#endif
+```
+The `qmk` compile or flash process will combine everything into the firmware:
 ```
 qmk flash ~/qmk_firmware/users/newbie/planck.json
 ```
@@ -234,26 +242,8 @@ The added advantage of using wrapper is ability to share layouts with different 
 
 # Limitations
 
-## Custom Keycode Safe Range
-`config.h` is the only header file built alongside `keymap.c` generated from the json file. Keyboard header `QMK_KEYBOARD_H` cannot be included in `config.h` because it will lead to preprocessor conflict in the build process. Thus the use of `SAFE_RANGE` to enumerate custom keycodes is not supported inside `config.h`.
-
-### Workaround
-* Use `#include "quantum/keycodes.h"` for `QK_USER`
-* Block op-code from assembly use
-
-```c
-#include "quantum/keycodes.h"
-
-#ifndef __ASSEMBLER__
-enum custom_keycode {
-    MY_KEYCODE1 = QK_USER,
-    MY_KEYCODE2
-};
-#endif
-```
-
 ## Language Specific Keycode
-Likewise, the use of [language-specific keycode](https://docs.qmk.fm/#/reference_keymap_extras) header files will lead to compile errors because those header files will include `"keymap.h"` that will lead to compile time conflicts.
+The use of [language-specific keycode](https://docs.qmk.fm/#/reference_keymap_extras) header files will lead to compile errors because those header files will include `"keymap.h"` that will lead to compile time conflicts.
 
 ### Workaround
 Make a copy of the [language keymap](https://github.com/qmk/qmk_firmware/tree/master/quantum/keymap_extras) into the userspace folder, remove the `#include "keymap.h"` line, and include this file instead.
@@ -267,10 +257,10 @@ With userspace setup as an independent folder, it can be stored in a personal Gi
 ~/qmk_firmware/              : https://github.com/qmk/qmk_firmware
 ~/qmk_firmware/users/newbie/ : git@github.com:newbie/qmk_userspace.git
 ```
-When setup in this manner, `git pull` inside `~/qmk_firmware/` will update directly from QMK repository, while `~/qmk_firmware/users/newbie/` update from `newbie` GitHub repository.
+When setup in this manner, `git pull` inside `~/qmk_firmware/` will update directly from QMK repository, while `~/qmk_firmware/users/newbie/` update from `newbie`'s GitHub repository.
 
 ## Building with GitHub Actions
-[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml` with the following content:
+[GitHub Actions](https://docs.github.com/en/actions) can be leveraged to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml` with the following content:
 {% raw %}
 ```yml
 name: Build QMK firmware
@@ -325,8 +315,9 @@ The `matrix.file:` is a list of json files to be built (`planck.json` and `crkbd
 
 
 # Summary
-Maintaining personal build environment this way will keep code files tidy in one location instead of scattering them all over the QMK source tree.
+Maintaining a personal build environment this way will keep your source files tidy in a standalone repository.
 
 
 # Links
 [QMK cheatsheet](https://jayliu50.github.io/qmk-cheatsheet/)
+[GitHub Actions](https://docs.github.com/en/actions)
