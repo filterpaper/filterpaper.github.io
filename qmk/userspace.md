@@ -1,32 +1,40 @@
 # Standalone Userspace
 
-One of the least obvious ways of building QMK firmware is using a json file with [userspace](https://docs.qmk.fm/#/feature_userspace). This method is favored personally for the following advantages:
+Building QMK firmware with a JSON file and [userspace](https://docs.qmk.fm/#/feature_userspace) is a less common but effective method that has several advantages, including:
 
-* Simplified file management with everything in one folder—avoids deep source tree like `keyboards/kbdfans/kbd67/mkiirgb/keymaps`.
-* Skips `keymap.c` conversion with `qmk json2c`. 
-* Avoids onerous text editing of `keymaps[]` in `keymap.c`.
-* Easy to extend support for additional keyboards.
+* Simplified file management: All files are kept in a single folder, which can help to keep your project organized and easy to navigate.
+* No need to convert `keymap.json`: The JSON file can be used directly, which eliminates the need to use the qmk json2c tool.
+* Easier editing of keymaps: The JSON file is much easier to edit than the keymap.c file, which makes it convenient to make changes to your keymap.
+* Easy to add support for more keyboards with additional JSON files, which makes it a versatile and flexible option for building QMK firmware.
 
 
 # Initial space setup
-Prerequisite: [QMK build environment](https://docs.qmk.fm/#/newbs_getting_started) must be installed correctly before proceeding. The [QMK userspace](https://docs.qmk.fm/#/feature_userspace) should be your github name. Create that inside `qmk_firmware/users/`:
+Before you begin, make sure that you have installed the QMK build environment correctly. You can find instructions on how to do this on the [QMK getting started](https://docs.qmk.fm/#/newbs_getting_started) page.
+
+Once you have installed the QMK build environment, you need to create a userspace for your GitHub username. To do this, create a new directory inside the qmk_firmware/users/ directory and name it after your GitHub username.
+
+For example, if your GitHub username is `newbie`, you would create a directory called `newbie` inside the `qmk_firmware/users/` directory:
 ```
 mkdir ~/qmk_firmware/users/newbie/
 ```
-Visit the [Configurator](https://config.qmk.fm/) to customise a key map layout for your keyboard. It is important for the Configurator's *KEYMAP NAME* field to match userspace, "newbie" in this example. 
+To customize a keymap layout for your keyboard, you can use the [QMK Configurator](https://config.qmk.fm/). To do this, follow these steps:
 
-Export that layout and it will be saved as `newbie.json` by default. Move the file into the userspace folder if not already saved inside:
-```
-mv newbie.json ~/qmk_firmware/users/newbie/
-```
+1. Go to the QMK Configurator website.
+1. Select your keyboard from the list of supported keyboards.
+1. In the `KEYMAP NAME` field, enter the name of your userspace. In this example, the name is "newbie".
+1. Click on the "Customize" button.
+1. Use the Configurator to customize your keymap layout.
+1. Click on the "Export" button.
+1. The keymap layout will be saved as a JSON file called "`newbie.json`" by default.
+1. Move the "`newbie.json`" file into the userspace folder.
 
 
 # Compiling a default firmware
-Building a firmware is as simple as running `qmk compile` on that .json file:
+To build a firmware with your custom keymap layout, you can use the `qmk compile` command with your keymap JSON file as the parameter:
 ```
 qmk compile ~/qmk_firmware/users/newbie/newbie.json
 ```
-If everything goes smoothly, it will build a firmware with default settings using your custom key layout. You can also run `qmk flash` instead on the .json file to compile and follow with flashing the output.
+If everything goes smoothly, the command will build a firmware with your custom keymap layout. You can also run the `qmk flash` command to compile and flash the firmware to your keyboard in one step.
 
 
 # Customising the firmware
@@ -37,15 +45,15 @@ Hardware feature and QMK variables are placed in `rules.mk` and `config.h`. Both
 ~/qmk_firmware/users/newbie/rules.mk
 ~/qmk_firmware/users/newbie/config.h
 ```
-Instead of `keymap.c`, custom source codes should be saved into `<name>.c` like:
+Instead of `keymap.c`, custom source codes should be added into `<name>.c`, for example:
 ```
 ~/qmk_firmware/users/newbie/newbie.c
 ```
-Unlike `keymap.c`, the `keymaps[]` array is excluded from this file because key layout is stored in the .json file. Do add the following line into `rules.mk` for QMK build process to find it during compile time:
+Unlike `keymap.c`, the `keymaps[]` array is excluded from this file because the layout is stored in the JSON file. To tell the QMK introspection build process to find your custom source codes during compile time, you need to add the following line to the rules.mk file:
 ```c
-SRC += newbie.c
+INTROSPECTION_KEYMAP_C = newbie.c
 ```
-When you are done, userspace will have these 4 basic files:
+When you are done, the userspace folder will contain these 4 basic files:
 ```
 ~$ tree qmk_firmware/users/newbie/
 qmk_firmware/users/newbie/
@@ -56,18 +64,18 @@ qmk_firmware/users/newbie/
 
 0 directories, 4 files
 ```
-The `qmk compile ~/qmk_firmware/users/newbie/newbie.json` process will automatically include everything in that folder. Except for `newbie.json`, all files are optional. You can have just `config.h` for modifying QMK variables or just `rules.mk` for enabling one feature.
+When you run the `qmk compile ~/qmk_firmware/users/newbie/newbie.json` command, the QMK build process will automatically include all files in the current directory. However, not all of these files are required. The only required file is the JSON layout file while the others are optional. 
 
 
 # Supporting multiple keyboard
 Additional keyboards can be configured in the same userspace with the following guideline:
-* Use distinct keyboard file names for each .json like `<keyboard-name>.json`.
+* Use distinct keyboard file names for each JSON like `<keyboard-name>.json`.
 * Use `#ifdef` conditional preprocessors for keyboard-specific codes.
 
-The following are some examples.
+The following are some examples:
 
 ## rules.mk
-QMK features can be enabled exclusively for specific hardware with `ifeq` blocks:
+QMK features can be enabled only for specific hardware within `ifeq` blocks:
 ```make
 # Common feature for all keyboards
 BOOTMAGIC_ENABLE = yes
@@ -88,11 +96,11 @@ ifeq ($(strip $(KEYBOARD)), crkbd/rev1/common)
     OLED_DRIVER_ENABLE = yes
 endif
 
-SRC += newbie.c
+INTROSPECTION_KEYMAP_C = newbie.c
 ```
 
 ## config.h
-QMK variables can likewise be selectively configured inside conditional `#ifdef` blocks:
+QMK variables can be configured selectively inside conditional `#ifdef` blocks:
 ```c
 #pragma once
 
@@ -114,7 +122,7 @@ QMK variables can likewise be selectively configured inside conditional `#ifdef`
 ```
 
 ## newbie.c
-Judicious use of `#ifdef` conditions in the source is recommended for relevant sections, matching those in `rules.mk` and `config.h`. This will exclude code meant only for specific keyboards:
+It is recommended to use `#ifdef` conditions in the source code to exclude code that is only meant for specific keyboards. This can be done by matching the `#ifdef` conditions to the keyboard definitions in `rules.mk` and `config.h`. Here is an example:
 ```c
 // Init effect for RGB boards only
 #ifdef RGB_MATRIX_ENABLE
@@ -153,7 +161,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 ```
 
 ## Collectively
-When you're done, the shared userspace for multiple keyboards will be in a neat structure:
+When you are finished, the shared userspace for multiple keyboards will be organized in a clean and efficient manner:
 ```
 ~$ tree qmk_firmware/users/newbie/
 qmk_firmware/users/newbie/
@@ -165,16 +173,16 @@ qmk_firmware/users/newbie/
 
 0 directories, 5 files
 ```
-Rebuilding and flashing each keyboard's firmware is as simple as:
+Compiling and flashing the firmware for each keyboard can be perform using `qmk flash` with the JSON file as parameter:
 ```
 qmk flash ~/qmk_firmware/users/newbie/bm40rgb.json
 qmk flash ~/qmk_firmware/users/newbie/crkbd.json
 ```
 
 # Advance wrapper layout
-Exported key map from the [Configurator](https://config.qmk.fm/) may not be favorable to a power user who prefers editing layouts in `keymap.c` text format. Key map wrapper can be adapted to use json file.
-## planck.json
-Instead of exporting from the Configurator, create a `planck.json` file with *macro* names that make sense for each layer:
+The keymap JSON file that is exported from the Configurator is not always ideal for power users who prefer to edit layouts in text format. A keymap "wrapper" can be adapted to use JSON files, which can be more convenient for power users.
+## planck.json example
+Instead of exporting a keymap from the Configurator, you can create a `planck.json` file and define the keymap layout and macro names manually:
 ```json
 {
     "author": "",
@@ -228,39 +236,26 @@ _______, KC_F11,  KC_F12,  _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP,
 _______, _______, _______, _______, _______, _______, _______, KC_INS,  KC_DEL,  _______, _______, _______, \
 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ```
-Add the the following line into `config.h`: 
+Add the following line into `config.h` to include the wrapper macros into the build process: 
 ```
 #ifndef __ASSEMBLER__ // Guard against use with non-C files
 #    include "wrappers.h"
 #endif
 ```
-The `qmk` compile or flash process will combine everything into the firmware:
-```
-qmk flash ~/qmk_firmware/users/newbie/planck.json
-```
-The added advantage of using wrapper is ability to share layouts with different keyboards.
-
-# Limitations
-
-## Language Specific Keycode
-The use of [language-specific keycode](https://docs.qmk.fm/#/reference_keymap_extras) header files will lead to compile errors because those header files will include `"keymap.h"` that will lead to compile time conflicts.
-
-### Workaround
-Make a copy of the [language keymap](https://github.com/qmk/qmk_firmware/tree/master/quantum/keymap_extras) into the userspace folder, remove the `#include "keymap.h"` line, and include this file instead.
-
+The QMK build process will automatically expand the macros defined in the `planck.json` file when compiling the firmware.
 
 # GitHub Integration
 
 ## Userspace Repository
-With userspace setup as an independent folder, it can be stored in a personal GitHub repository distinct from QMK firmware. The userspace folder `~/qmk_firmware/users/newbie/` can be setup to use a different origin, like `https://github.com/newbie/`. Example:
+With userspace set up as a standalone folder, it can be stored in a personal GitHub repository that is *separate* from QMK firmware. The userspace folder `~/qmk_firmware/users/newbie/` can point to a different `git` origin. For example:
 ```
 ~/qmk_firmware/              : https://github.com/qmk/qmk_firmware
 ~/qmk_firmware/users/newbie/ : git@github.com:newbie/qmk_userspace.git
 ```
-When setup in this manner, `git pull` inside `~/qmk_firmware/` will update directly from QMK repository, while `~/qmk_firmware/users/newbie/` update from `newbie`'s GitHub repository.
+When configured in this manner, `git pull` inside `~/qmk_firmware/` will pull directly from QMK repository, while `~/qmk_firmware/users/newbie/` will use `newbie`'s GitHub repository.
 
 ## Building with GitHub Actions
-[GitHub Actions](https://docs.github.com/en/actions) can be leveraged to build QMK firmware, eliminating the need to setup a local build environment. To do so, create the workflow file within the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml` with the following content:
+[GitHub Actions](https://docs.github.com/en/actions) can be used to build QMK firmware without the need to set up a local build environment. To do this, create a workflow file in the userspace folder `~/qmk_firmware/users/newbie/.github/workflows/build-qmk.yml` with the following content:
 {% raw %}
 ```yml
 name: Build QMK firmware
@@ -311,13 +306,10 @@ jobs:
       continue-on-error: true
 ```
 {% endraw %}
-The `matrix.file:` is a list of json files to be built (`planck.json` and `crkbd.json` in the example). The workflow will clone QMK firmware and userspace repositories into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
+The `matrix.file:` node is the list of JSON files to be built (`planck.json` and `crkbd.json` are in the example). The workflow will clone a copy of QMK firmware and the userspace repository into a container on GitHub to build them. The output firmware zip files will be found in the Action tab. See [Building QMK with GitHub Userspace](https://docs.qmk.fm/#/newbs_building_firmware_workflow) for more details. Credit goes to [@caksoylar](https://github.com/caksoylar) for sharing this workflow.
 
-
-# Summary
-Maintaining a personal build environment this way will keep your source files tidy in a standalone repository.
 
 
 # Links
-[QMK cheatsheet](https://jayliu50.github.io/qmk-cheatsheet/)
-[GitHub Actions](https://docs.github.com/en/actions)
+* [QMK cheatsheet](https://jayliu50.github.io/qmk-cheatsheet/)
+* [GitHub Actions](https://docs.github.com/en/actions)
