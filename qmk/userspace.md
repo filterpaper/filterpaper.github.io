@@ -21,7 +21,7 @@ To customize a keymap layout for your keyboard, you can use the [QMK Configurato
 
 1. Go to the QMK Configurator website.
 1. Select your keyboard from the list of supported keyboards.
-1. In the `KEYMAP NAME` field, enter the name of your userspace. In this example, the name is "newbie".
+1. In the `KEYMAP NAME` field, enter the name of your userspace. In this example, the name is "newbie". (Important: this name must match your GitHub user name)
 1. Click on the "Customize" button.
 1. Use the Configurator to customize your keymap layout.
 1. Click on the "Export" button.
@@ -200,6 +200,7 @@ Instead of exporting a keymap from the Configurator, you can create a `planck.js
     "version": 1
 }
 ```
+(This example uses `"keymap": "newbie"`. The `keymap` name must match your GitHub account name)
 ## wrappers.h
 Create a `wrappers.h` file to map those macro names to actual key layout (like a typical `keymap.c`):
 ```
