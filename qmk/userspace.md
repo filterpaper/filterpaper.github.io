@@ -205,7 +205,6 @@ Instead of exporting a keymap from the Configurator, you can create a `planck.js
 Create a `wrappers.h` file to map those macro names to actual key layout (like a typical `keymap.c`):
 ```
 #pragma once
-#include "quantum/keycodes.h"
 
 #define LAYOUT_wrapper_ortho_4x12(...) LAYOUT_ortho_4x12(__VA_ARGS__)
 
